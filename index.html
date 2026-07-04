@@ -3,20 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>VERUM — пространство практики</title>
+<title>VERUM — истина внутри</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Manrope:wght@200;300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --abyss: #0d0f1c;
-    --deep: #12152600;
+    --abyss: #0c0e1a;
     --ink: #e8e5f0;
     --soft-ink: #a29fb8;
     --faint: #6d6a85;
     --pearl: #d9d4e8;
     --gold: #c9ae7d;
     --deep-gold: #b0925f;
-    --violet-glow: rgba(139, 125, 190, 0.25);
     --glass: rgba(255, 255, 255, 0.055);
     --glass-strong: rgba(255, 255, 255, 0.09);
     --glass-border: rgba(255, 255, 255, 0.14);
@@ -36,54 +34,100 @@
     background: var(--abyss);
   }
 
+  /* ===== DEEP BACKDROP with volume ===== */
   .backdrop {
     position: fixed;
     inset: 0;
-    z-index: -2;
+    z-index: -3;
     background:
-      radial-gradient(ellipse 120% 80% at 50% -10%, #1c1a38 0%, transparent 60%),
-      linear-gradient(175deg, #10121f 0%, #0d0f1c 45%, #0f0d18 100%);
+      radial-gradient(ellipse 130% 90% at 50% -15%, #201d42 0%, transparent 55%),
+      radial-gradient(ellipse 100% 60% at 85% 110%, #16202b 0%, transparent 60%),
+      linear-gradient(172deg, #11132400 0%, #0c0e1a 40%, #0e0c18 100%);
   }
 
   .backdrop::before, .backdrop::after {
     content: '';
     position: absolute;
     border-radius: 50%;
-    filter: blur(100px);
+    filter: blur(110px);
   }
 
   .backdrop::before {
-    width: 85vw; height: 85vw;
-    top: -25vw; right: -30vw;
-    background: radial-gradient(circle, rgba(106, 90, 165, 0.30) 0%, rgba(80, 70, 140, 0.12) 50%, transparent 75%);
+    width: 90vw; height: 90vw;
+    top: -28vw; right: -32vw;
+    background: radial-gradient(circle, rgba(111, 94, 175, 0.32) 0%, rgba(80, 70, 140, 0.12) 50%, transparent 75%);
     animation: drift1 30s ease-in-out infinite alternate;
   }
 
   .backdrop::after {
-    width: 90vw; height: 90vw;
-    bottom: -35vw; left: -30vw;
-    background: radial-gradient(circle, rgba(60, 85, 100, 0.28) 0%, rgba(150, 120, 70, 0.08) 55%, transparent 78%);
+    width: 95vw; height: 95vw;
+    bottom: -38vw; left: -32vw;
+    background: radial-gradient(circle, rgba(58, 88, 105, 0.3) 0%, rgba(160, 128, 75, 0.09) 55%, transparent 78%);
     animation: drift2 36s ease-in-out infinite alternate;
   }
 
-  @keyframes drift1 { from { transform: translate(0,0) scale(1); opacity: 0.9; } to { transform: translate(-10vw, 8vw) scale(1.18); opacity: 1; } }
-  @keyframes drift2 { from { transform: translate(0,0) scale(1); opacity: 0.85; } to { transform: translate(12vw, -10vw) scale(1.12); opacity: 1; } }
+  @keyframes drift1 {
+    from { transform: translate(0,0) scale(1); }
+    to { transform: translate(-10vw, 8vw) scale(1.18); }
+  }
 
-  .stars {
+  @keyframes drift2 {
+    from { transform: translate(0,0) scale(1); }
+    to { transform: translate(12vw, -10vw) scale(1.12); }
+  }
+
+  /* vignette for depth */
+  .vignette {
     position: fixed;
     inset: 0;
     z-index: -1;
-    background-image:
-      radial-gradient(1px 1px at 12% 22%, rgba(255,255,255,0.5), transparent),
-      radial-gradient(1px 1px at 78% 12%, rgba(255,255,255,0.35), transparent),
-      radial-gradient(1.5px 1.5px at 55% 35%, rgba(217,212,232,0.4), transparent),
-      radial-gradient(1px 1px at 32% 8%, rgba(255,255,255,0.3), transparent),
-      radial-gradient(1px 1px at 90% 42%, rgba(217,212,232,0.28), transparent),
-      radial-gradient(1.5px 1.5px at 8% 55%, rgba(255,255,255,0.22), transparent);
-    animation: twinkle 9s ease-in-out infinite alternate;
+    background: radial-gradient(ellipse 95% 85% at 50% 45%, transparent 55%, rgba(5, 5, 14, 0.55) 100%);
+    pointer-events: none;
   }
 
-  @keyframes twinkle { from { opacity: 0.5; } to { opacity: 1; } }
+  /* ===== STAR DUST — two drifting layers ===== */
+  .stars, .stars2 {
+    position: fixed;
+    inset: -10%;
+    z-index: -2;
+    pointer-events: none;
+  }
+
+  .stars {
+    background-image:
+      radial-gradient(1px 1px at 12% 22%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1px 1px at 78% 12%, rgba(255,255,255,0.4), transparent),
+      radial-gradient(1.4px 1.4px at 55% 35%, rgba(217,212,232,0.5), transparent),
+      radial-gradient(1px 1px at 32% 8%, rgba(255,255,255,0.35), transparent),
+      radial-gradient(1px 1px at 90% 42%, rgba(217,212,232,0.32), transparent),
+      radial-gradient(1.4px 1.4px at 8% 55%, rgba(255,255,255,0.28), transparent),
+      radial-gradient(1px 1px at 45% 62%, rgba(255,255,255,0.25), transparent),
+      radial-gradient(1px 1px at 68% 75%, rgba(217,212,232,0.3), transparent),
+      radial-gradient(1.2px 1.2px at 22% 82%, rgba(255,255,255,0.22), transparent);
+    animation: twinkle 8s ease-in-out infinite alternate, slowdrift 90s linear infinite alternate;
+  }
+
+  .stars2 {
+    background-image:
+      radial-gradient(0.8px 0.8px at 25% 30%, rgba(201,174,125,0.4), transparent),
+      radial-gradient(0.8px 0.8px at 62% 18%, rgba(255,255,255,0.2), transparent),
+      radial-gradient(0.8px 0.8px at 85% 60%, rgba(201,174,125,0.3), transparent),
+      radial-gradient(0.8px 0.8px at 15% 70%, rgba(217,212,232,0.22), transparent),
+      radial-gradient(0.8px 0.8px at 50% 88%, rgba(255,255,255,0.18), transparent),
+      radial-gradient(0.8px 0.8px at 72% 45%, rgba(201,174,125,0.22), transparent),
+      radial-gradient(0.8px 0.8px at 38% 50%, rgba(255,255,255,0.15), transparent);
+    animation: twinkle 11s ease-in-out infinite alternate-reverse, slowdrift 120s linear infinite alternate-reverse;
+  }
+
+  @keyframes twinkle {
+    from { opacity: 0.45; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slowdrift {
+    from { transform: translate(0, 0); }
+    to { transform: translate(2.5%, 1.5%); }
+  }
 
   body::before {
     content: '';
@@ -97,10 +141,11 @@
   .app {
     max-width: 480px;
     margin: 0 auto;
-    padding: 0 18px calc(110px + env(safe-area-inset-bottom));
+    padding: 0 18px calc(112px + env(safe-area-inset-bottom));
     min-height: 100vh;
   }
 
+  /* ===== HEADER ===== */
   header {
     padding: calc(18px + env(safe-area-inset-top)) 4px 22px;
     display: flex;
@@ -113,10 +158,10 @@
   .wordmark {
     font-family: 'Cormorant Garamond', serif;
     font-weight: 400;
-    font-size: 21px;
+    font-size: 22px;
     letter-spacing: 0.42em;
     color: var(--pearl);
-    text-shadow: 0 0 24px rgba(217, 212, 232, 0.35);
+    text-shadow: 0 0 28px rgba(217, 212, 232, 0.4);
   }
 
   .wordmark::after {
@@ -124,33 +169,29 @@
     display: block;
     font-family: 'Manrope', sans-serif;
     font-weight: 300;
-    font-size: 9px;
-    letter-spacing: 0.32em;
+    font-size: 9.5px;
+    letter-spacing: 0.36em;
     color: var(--faint);
-    margin-top: 3px;
+    margin-top: 4px;
+    text-transform: lowercase;
     text-shadow: none;
   }
 
-  .avatar-pill {
-    padding: 7px 16px;
-    border-radius: 40px;
-    background: var(--glass);
-    backdrop-filter: blur(24px) saturate(1.3);
-    -webkit-backdrop-filter: blur(24px) saturate(1.3);
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--glass-shadow);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    color: var(--soft-ink);
+  .lotus {
+    width: 68px;
+    height: auto;
+    opacity: 0.9;
+    filter: drop-shadow(0 0 16px rgba(201,174,125,0.4));
   }
 
+  /* ===== GLASS ===== */
   .glass-card {
-    background: var(--glass);
+    background: linear-gradient(155deg, rgba(255,255,255,0.075), rgba(255,255,255,0.035) 55%, rgba(139,125,190,0.045));
     backdrop-filter: blur(28px) saturate(1.4);
     -webkit-backdrop-filter: blur(28px) saturate(1.4);
     border: 1px solid var(--glass-border);
     border-radius: 26px;
-    box-shadow: var(--glass-shadow);
+    box-shadow: var(--glass-shadow), inset 0 1px 1px rgba(255,255,255,0.08);
     position: relative;
     overflow: hidden;
   }
@@ -163,133 +204,775 @@
     background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
   }
 
+  .glass-pill {
+    padding: 12px 26px;
+    border-radius: 50px;
+    background: var(--glass-strong);
+    backdrop-filter: blur(24px) saturate(1.3);
+    -webkit-backdrop-filter: blur(24px) saturate(1.3);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow), inset 0 1px 1px rgba(255,255,255,0.12);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--ink);
+    cursor: pointer;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    white-space: nowrap;
+  }
+
+  .glass-pill:active { transform: scale(0.96); }
+
+  .glass-pill.gold {
+    background: linear-gradient(135deg, rgba(201,174,125,0.28), rgba(176,146,95,0.16));
+    color: var(--gold);
+    border-color: rgba(201,174,125,0.35);
+    box-shadow: 0 8px 28px rgba(201,174,125,0.12), inset 0 1px 1px rgba(255,255,255,0.15);
+  }
+
   .screen { display: none; }
   .screen.active { display: block; animation: rise 0.6s ease forwards; }
 
-  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-
-  /* ===== THOUGHT OF THE DAY ===== */
-  .thought-banner {
-    padding: 20px 22px;
-    margin-bottom: 16px;
-    border-left: 2px solid rgba(201,174,125,0.4);
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
   }
+
+  /* ===== TODAY ===== */
+  .today-hero { padding: 30px 26px; margin-bottom: 14px; }
+
+  .today-date {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--faint);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .today-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+
+  .today-title em {
+    font-style: italic;
+    color: var(--gold);
+    text-shadow: 0 0 28px rgba(201,174,125,0.35);
+  }
+
+  .today-sub {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--soft-ink);
+    margin-bottom: 24px;
+    max-width: 90%;
+  }
+
+  .practice-row { display: flex; align-items: center; gap: 16px; }
+
+  .play-orb {
+    width: 58px; height: 58px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(217,212,232,0.22), rgba(139,125,190,0.12) 60%, rgba(201,174,125,0.08));
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(217,212,232,0.25);
+    box-shadow: 0 8px 28px rgba(0,0,5,0.4), 0 0 24px rgba(139,125,190,0.18), inset 0 1px 2px rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    color: var(--pearl);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .play-orb:active { transform: scale(0.92); }
+
+  .practice-meta .p-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-style: italic;
+    color: var(--ink);
+  }
+
+  .practice-meta .p-dur {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--faint);
+    margin-top: 3px;
+  }
+
+  /* Thought of the day */
+  .thought-card {
+    padding: 24px 26px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
   .thought-eyebrow {
     font-size: 9px;
-    letter-spacing: 0.25em;
+    letter-spacing: 0.32em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .thought-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 19px;
+    line-height: 1.55;
+    color: var(--pearl);
+    text-shadow: 0 0 24px rgba(217,212,232,0.15);
+  }
+
+  .streak-strip { display: flex; gap: 10px; margin-bottom: 14px; }
+  .streak-chip { flex: 1; padding: 18px 14px; text-align: center; }
+
+  .streak-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--gold);
+    line-height: 1;
+    text-shadow: 0 0 20px rgba(201,174,125,0.3);
+  }
+
+  .streak-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--faint);
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+
+  /* Program block expandable */
+  .program-banner { padding: 22px 24px; margin-bottom: 14px; }
+
+  .program-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+  }
+
+  .program-info .pr-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.28em;
     color: var(--gold);
     text-transform: uppercase;
     margin-bottom: 6px;
   }
-  .thought-text {
+
+  .program-info .pr-title {
     font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 16px;
+    font-size: 18px;
+    color: var(--ink);
+  }
+
+  .program-info .pr-progress {
+    font-size: 11px;
+    color: var(--faint);
+    margin-top: 4px;
+  }
+
+  .chev {
+    font-size: 13px;
+    color: var(--faint);
+    transition: transform 0.35s ease;
+    flex-shrink: 0;
+  }
+
+  .expanded .chev { transform: rotate(180deg); }
+
+  .program-days {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+  }
+
+  .expanded .program-days { max-height: 600px; }
+
+  .day-row {
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+    padding: 11px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .day-row:first-child { margin-top: 18px; }
+  .day-row:last-child { border-bottom: none; }
+
+  .day-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    color: var(--gold);
+    flex-shrink: 0;
+    width: 42px;
+  }
+
+  .day-name {
+    font-size: 12.5px;
+    color: var(--soft-ink);
     line-height: 1.5;
+  }
+
+  .day-name b { color: var(--ink); font-weight: 400; }
+
+  .program-cta { margin-top: 18px; text-align: center; }
+
+  /* Philosophy block */
+  .philosophy { padding: 22px 24px; }
+
+  .philosophy-text {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s ease;
+  }
+
+  .expanded .philosophy-text { max-height: 900px; }
+
+  .manifesto {
+    margin-top: 18px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--soft-ink);
+  }
+
+  .manifesto p { margin-bottom: 14px; }
+  .manifesto em { color: var(--gold); font-style: italic; }
+  .manifesto .m-sign {
+    text-align: right;
+    font-style: italic;
     color: var(--pearl);
+    margin-top: 6px;
   }
-
-  /* ===== TODAY ===== */
-  .today-hero { padding: 30px 26px; margin-bottom: 16px; }
-  .today-date { font-size: 10px; letter-spacing: 0.3em; color: var(--faint); text-transform: uppercase; margin-bottom: 14px; }
-  .today-title { font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 30px; line-height: 1.2; color: var(--ink); margin-bottom: 8px; }
-  .today-title em { font-style: italic; color: var(--gold); text-shadow: 0 0 28px rgba(201,174,125,0.35); }
-  .today-sub { font-size: 13px; line-height: 1.7; color: var(--soft-ink); margin-bottom: 24px; max-width: 90%; }
-  .practice-row { display: flex; align-items: center; gap: 16px; }
-  .play-orb {
-    width: 58px; height: 58px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, rgba(217,212,232,0.22), rgba(139,125,190,0.12) 60%, rgba(201,174,125,0.08));
-    backdrop-filter: blur(20px); border: 1px solid rgba(217,212,232,0.25);
-    box-shadow: 0 8px 28px rgba(0,0,5,0.4), 0 0 24px rgba(139,125,190,0.18), inset 0 1px 2px rgba(255,255,255,0.2);
-    display: flex; align-items: center; justify-content: center; font-size: 15px; color: var(--pearl); cursor: pointer; flex-shrink: 0;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .play-orb:active { transform: scale(0.92); }
-  .practice-meta .p-name { font-family: 'Cormorant Garamond', serif; font-size: 17px; font-style: italic; color: var(--ink); }
-  .practice-meta .p-dur { font-size: 11px; letter-spacing: 0.15em; color: var(--faint); margin-top: 3px; }
-
-  .streak-strip { display: flex; gap: 10px; margin-bottom: 16px; }
-  .streak-chip { flex: 1; padding: 18px 14px; text-align: center; }
-  .streak-num { font-family: 'Cormorant Garamond', serif; font-size: 28px; color: var(--gold); line-height: 1; text-shadow: 0 0 20px rgba(201,174,125,0.3); }
-  .streak-label { font-size: 9px; letter-spacing: 0.2em; color: var(--faint); margin-top: 6px; text-transform: uppercase; }
 
   /* ===== LIBRARY ===== */
-  .level-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-  .level-tab {
-    flex: 1; padding: 12px 4px; border-radius: 50px; text-align: center; font-size: 10px; letter-spacing: 0.16em; color: var(--faint);
-    background: rgba(255,255,255,0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); cursor: pointer; transition: all 0.3s ease;
+  .cat-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 2px 14px;
+    margin-bottom: 8px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
   }
-  .level-tab.active { background: var(--glass-strong); color: var(--gold); border-color: rgba(201,174,125,0.3); box-shadow: 0 4px 20px rgba(201,174,125,0.1); }
-  .level-desc { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; color: var(--soft-ink); text-align: center; margin-bottom: 22px; line-height: 1.5; padding: 0 12px; }
+
+  .cat-scroll::-webkit-scrollbar { display: none; }
+
+  .cat-chip {
+    padding: 9px 18px;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.035);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.09);
+    color: var(--faint);
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .cat-chip.active {
+    background: var(--glass-strong);
+    color: var(--gold);
+    border-color: rgba(201,174,125,0.3);
+    box-shadow: 0 4px 20px rgba(201,174,125,0.1);
+  }
+
+  .lib-note {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--faint);
+    text-align: center;
+    margin-bottom: 18px;
+  }
+
   .med-list { display: flex; flex-direction: column; gap: 12px; }
-  .med-card { padding: 18px 20px; display: flex; align-items: center; gap: 16px; cursor: pointer; transition: transform 0.25s ease; }
-  .med-card:active { transform: scale(0.985); }
-  .med-icon {
-    width: 44px; height: 44px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, rgba(217,212,232,0.14), rgba(139,125,190,0.06));
-    border: 1px solid rgba(217,212,232,0.15); display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--pearl); flex-shrink: 0;
+
+  .med-card {
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: transform 0.25s ease;
   }
+
+  .med-card:active { transform: scale(0.985); }
+
+  .med-icon {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(217,212,232,0.16), rgba(139,125,190,0.08));
+    border: 1px solid rgba(217,212,232,0.18);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    color: var(--pearl);
+    flex-shrink: 0;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.12);
+  }
+
   .med-body { flex: 1; min-width: 0; }
-  .med-name { font-family: 'Cormorant Garamond', serif; font-size: 17px; color: var(--ink); margin-bottom: 3px; }
-  .med-desc { font-size: 11px; color: var(--faint); line-height: 1.5; }
-  .med-dur { font-size: 11px; color: var(--soft-ink); flex-shrink: 0; letter-spacing: 0.05em; }
+
+  .med-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .med-tags { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+  .level-badge {
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    border: 1px solid rgba(201,174,125,0.3);
+    border-radius: 20px;
+    padding: 2px 9px;
+  }
+
+  .med-desc { font-size: 11px; color: var(--faint); }
+  .med-dur { font-size: 11px; letter-spacing: 0.1em; color: var(--soft-ink); flex-shrink: 0; }
+  .lock-chip { font-size: 12px; color: var(--faint); flex-shrink: 0; opacity: 0.7; }
 
   /* ===== TIMER ===== */
   .timer-wrap { display: flex; flex-direction: column; align-items: center; }
-  .mode-toggle { display: flex; gap: 4px; margin-bottom: 28px; padding: 5px; border-radius: 50px; background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.09); }
-  .mode-btn { padding: 9px 24px; border-radius: 50px; font-size: 11px; letter-spacing: 0.16em; color: var(--faint); cursor: pointer; border: none; background: transparent; font-family: 'Manrope', sans-serif; }
-  .mode-btn.active { background: var(--glass-strong); color: var(--gold); }
-  .duration-select { display: flex; gap: 8px; margin-bottom: 34px; justify-content: center; }
-  .dur-btn { padding: 8px 18px; border-radius: 50px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.09); color: var(--faint); font-size: 12px; cursor: pointer; }
-  .dur-btn.active { background: var(--glass-strong); color: var(--gold); border-color: rgba(201,174,125,0.3); }
-  .ring-stage { position: relative; width: 250px; height: 250px; margin-bottom: 36px; }
-  .glass-sphere { position: absolute; inset: 22px; border-radius: 50%; background: radial-gradient(circle at 32% 28%, rgba(217,212,232,0.18), rgba(139,125,190,0.10) 45%, rgba(30,28,55,0.2) 80%); border: 1px solid rgba(217,212,232,0.16); box-shadow: 0 20px 60px rgba(0,0,5,0.5), 0 0 60px rgba(139,125,190,0.15), inset 0 2px 16px rgba(255,255,255,0.10); }
-  .ring-svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+
+  .mode-toggle {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    padding: 5px;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.035);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.09);
+  }
+
+  .mode-btn {
+    padding: 9px 24px;
+    border-radius: 50px;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--faint);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    background: transparent;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+  }
+
+  .mode-btn.active {
+    background: var(--glass-strong);
+    color: var(--gold);
+    box-shadow: 0 4px 16px rgba(0,0,5,0.3);
+  }
+
+  .duration-select, .pattern-row, .sound-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .duration-select, .pattern-row { margin-bottom: 18px; }
+  .sound-row { margin-bottom: 28px; }
+
+  .sound-label {
+    width: 100%;
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--faint);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .dur-btn {
+    padding: 8px 16px;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.09);
+    color: var(--faint);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .dur-btn.active {
+    background: var(--glass-strong);
+    color: var(--gold);
+    border-color: rgba(201,174,125,0.3);
+    box-shadow: 0 4px 20px rgba(201,174,125,0.08);
+  }
+
+  .ring-stage { position: relative; width: 250px; height: 250px; margin-bottom: 32px; }
+
+  .glass-sphere {
+    position: absolute;
+    inset: 22px;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 32% 28%, rgba(217,212,232,0.18), rgba(139,125,190,0.10) 45%, rgba(30,28,55,0.2) 80%);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(217,212,232,0.16);
+    box-shadow:
+      0 20px 60px rgba(0,0,5,0.5),
+      0 0 60px rgba(139,125,190,0.15),
+      inset 0 2px 16px rgba(255,255,255,0.10),
+      inset 0 -12px 32px rgba(60,50,110,0.25);
+    transition: transform 4s ease-in-out, box-shadow 4s ease-in-out;
+  }
+
+  .glass-sphere.inhale {
+    transform: scale(1.06);
+    box-shadow:
+      0 20px 60px rgba(0,0,5,0.5),
+      0 0 90px rgba(139,125,190,0.30),
+      inset 0 2px 16px rgba(255,255,255,0.14),
+      inset 0 -12px 32px rgba(60,50,110,0.25);
+  }
+
+  .glass-sphere.exhale { transform: scale(0.96); }
+
+  .ring-svg { width: 100%; height: 100%; transform: rotate(-90deg); position: relative; }
   .ring-bg { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 2; }
-  .ring-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .timer-display { font-family: 'Cormorant Garamond', serif; font-size: 54px; color: var(--ink); }
-  .timer-label { font-size: 9px; letter-spacing: 0.32em; color: var(--faint); margin-top: 10px; text-transform: uppercase; }
-  .timer-controls { display: flex; gap: 16px; align-items: center; margin-bottom: 24px; }
-  .ctrl-glass { width: 54px; height: 54px; border-radius: 50%; background: var(--glass); border: 1px solid var(--glass-border); color: var(--soft-ink); font-size: 17px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .play-glass { width: 74px; height: 74px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, rgba(201,174,125,0.35), rgba(176,146,95,0.18) 70%); border: 1px solid rgba(201,174,125,0.4); color: #f0e6d2; font-size: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .ring-progress {
+    fill: none;
+    stroke: url(#goldGrad);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+    stroke-dasharray: 723;
+    stroke-dashoffset: 723;
+    transition: stroke-dashoffset 1s linear;
+    filter: drop-shadow(0 0 6px rgba(201,174,125,0.5));
+  }
+
+  .ring-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+
+  .timer-display {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 54px;
+    font-weight: 300;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .timer-label {
+    font-size: 9px;
+    letter-spacing: 0.32em;
+    color: var(--faint);
+    margin-top: 10px;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .breath-phase-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: var(--gold);
+    margin-top: 6px;
+    text-shadow: 0 0 16px rgba(201,174,125,0.35);
+  }
+
+  .timer-controls { display: flex; gap: 16px; align-items: center; margin-bottom: 22px; }
+
+  .ctrl-glass {
+    width: 54px; height: 54px;
+    border-radius: 50%;
+    background: var(--glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    color: var(--soft-ink);
+    font-size: 17px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .ctrl-glass:active { transform: scale(0.92); }
+
+  .play-glass {
+    width: 74px; height: 74px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(201,174,125,0.35), rgba(176,146,95,0.18) 70%);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(201,174,125,0.4);
+    box-shadow: 0 12px 36px rgba(0,0,5,0.45), 0 0 40px rgba(201,174,125,0.2), inset 0 1px 3px rgba(255,255,255,0.25);
+    color: #f0e6d2;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .play-glass:active { transform: scale(0.93); }
+
+  .session-note {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: var(--faint);
+    text-align: center;
+  }
+
+  /* ===== PROGRAMS (sales) ===== */
+  .prog-intro {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--soft-ink);
+    text-align: center;
+    padding: 4px 20px 22px;
+  }
+
+  .prog-card { padding: 24px; margin-bottom: 14px; }
+
+  .prog-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .prog-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 21px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .prog-desc {
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--soft-ink);
+    margin-bottom: 18px;
+  }
+
+  .prog-foot {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .prog-meta {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--faint);
+  }
+
+  .prog-card.featured {
+    background: linear-gradient(155deg, rgba(201,174,125,0.14), rgba(139,125,190,0.08) 60%, rgba(255,255,255,0.03));
+    border-color: rgba(201,174,125,0.3);
+  }
 
   /* ===== PATH ===== */
-  .section-eyebrow { font-size: 10px; letter-spacing: 0.3em; color: var(--gold); text-transform: uppercase; margin: 26px 4px 14px; }
-  .cal-card { padding: 22px; }
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 22px; }
+
+  .section-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin: 26px 4px 14px;
+  }
+
+  .cal-card { padding: 22px; margin-bottom: 4px; }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
-  .cal-day { aspect-ratio: 1; border-radius: 10px; background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--faint); }
-  .cal-day.practiced { background: radial-gradient(circle at 35% 30%, rgba(201,174,125,0.35), rgba(176,146,95,0.15)); color: #f0e6d2; }
+
+  .cal-day-label {
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--faint);
+    padding-bottom: 6px;
+  }
+
+  .cal-day {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    color: var(--faint);
+  }
+
+  .cal-day.practiced {
+    background: radial-gradient(circle at 35% 30%, rgba(201,174,125,0.35), rgba(176,146,95,0.15));
+    border-color: rgba(201,174,125,0.35);
+    color: #f0e6d2;
+    box-shadow: 0 0 16px rgba(201,174,125,0.15);
+  }
+
+  .cal-day.today { border: 1.5px solid var(--gold); color: var(--gold); }
+
+  .history-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .history-item {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .history-date { font-size: 10px; letter-spacing: 0.12em; color: var(--faint); }
+  .history-type { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; color: var(--ink); margin-top: 3px; }
+  .history-dur { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--gold); }
+
+  .empty-state {
+    text-align: center;
+    padding: 44px 20px;
+    color: var(--faint);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    line-height: 2;
+  }
 
   /* ===== DOCK ===== */
   .dock {
-    position: fixed; bottom: calc(16px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); width: calc(100% - 36px); max-width: 440px;
-    display: flex; padding: 8px; border-radius: 60px; background: rgba(20, 22, 40, 0.55); backdrop-filter: blur(32px); -webkit-backdrop-filter: blur(32px); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 16px 48px rgba(0,0,5,0.5); z-index: 100;
+    position: fixed;
+    bottom: calc(14px + env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 32px);
+    max-width: 448px;
+    display: flex;
+    padding: 8px;
+    border-radius: 60px;
+    background: rgba(18, 20, 38, 0.6);
+    backdrop-filter: blur(32px) saturate(1.4);
+    -webkit-backdrop-filter: blur(32px) saturate(1.4);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow: 0 16px 48px rgba(0,0,5,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
+    z-index: 100;
   }
-  .dock-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 10px 0; border-radius: 50px; cursor: pointer; color: var(--faint); transition: all 0.2s ease; }
-  .dock-item .d-icon { font-size: 16px; line-height: 1; font-style: normal; }
-  .dock-item .d-label { font-size: 8.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 400; }
-  .dock-item.active { background: rgba(255,255,255,0.08); color: var(--gold); }
+
+  .dock-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 9px 0;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: var(--faint);
+  }
+
+  .dock-item .d-icon { font-size: 16px; line-height: 1; }
+
+  .dock-item .d-label {
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .dock-item.active {
+    background: rgba(255,255,255,0.08);
+    color: var(--gold);
+    box-shadow: 0 4px 16px rgba(0,0,5,0.35), inset 0 1px 1px rgba(255,255,255,0.1);
+  }
+
+  /* ===== COMPLETION ===== */
+  .completion {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(12,14,26,0.85);
+    backdrop-filter: blur(28px);
+    -webkit-backdrop-filter: blur(28px);
+    z-index: 200;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .completion.show { display: flex; }
+
+  .completion-orb {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(217,212,232,0.25), rgba(139,125,190,0.12) 60%);
+    border: 1px solid rgba(217,212,232,0.25);
+    box-shadow: 0 20px 60px rgba(0,0,5,0.5), 0 0 60px rgba(139,125,190,0.25), inset 0 2px 8px rgba(255,255,255,0.15);
+    margin-bottom: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px;
+    color: var(--pearl);
+  }
+
+  .completion h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 28px;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .completion p {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    line-height: 1.9;
+    color: var(--soft-ink);
+    margin-bottom: 36px;
+  }
 </style>
 </head>
 <body>
 
 <div class="backdrop"></div>
 <div class="stars"></div>
+<div class="stars2"></div>
+<div class="vignette"></div>
 
 <div class="app">
   <header>
     <div class="wordmark">VERUM</div>
-    <div class="avatar-pill" id="greeting">пространство</div>
+    <svg class="lotus" viewBox="0 0 104 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="rgba(201,174,125,0.75)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" fill="none">
+        <path d="M52 6 C57.5 15 57.5 29 52 39 C46.5 29 46.5 15 52 6 Z"/>
+        <path d="M35 11 C43 17 48.5 27 51 38 C41.5 34.5 34 23.5 35 11 Z"/>
+        <path d="M69 11 C61 17 55.5 27 53 38 C62.5 34.5 70 23.5 69 11 Z"/>
+        <path d="M14 22 C26 23.5 40 30.5 49 40 C35 42 20 35 14 22 Z"/>
+        <path d="M90 22 C78 23.5 64 30.5 55 40 C69 42 84 35 90 22 Z"/>
+        <path d="M30 44.5 C38 41 66 41 74 44.5"/>
+      </g>
+    </svg>
   </header>
 
-  <!-- TODAY SCREEN -->
+  <!-- ===== TODAY ===== -->
   <div class="screen active" id="screen-today">
-    <!-- МЫСЛЬ ДНЯ -->
-    <div class="glass-card thought-banner">
-      <div class="thought-eyebrow">Мысль дня</div>
-      <div class="thought-text">«То, что вы ищете во внешнем мире, уже сидит внутри вас и ждет, пока вы замолчите».</div>
-    </div>
-
-    <!-- ГЛАВНАЯ ПРАКТИКА -->
     <div class="glass-card today-hero">
       <div class="today-date" id="todayDate"></div>
       <div class="today-title">Возвращение<br>к <em>себе настоящей</em></div>
@@ -297,170 +980,933 @@
       <div class="practice-row">
         <div class="play-orb" onclick="haptic('light')">▶</div>
         <div class="practice-meta">
-          <div class="p-name">Дыхание рассвета</div>
-          <div class="p-dur">12 МИН · ТЕЛО</div>
+          <div class="p-name" id="dailyName"></div>
+          <div class="p-dur" id="dailyDur"></div>
         </div>
       </div>
     </div>
 
-    <!-- СТАТИСТИКА -->
+    <div class="glass-card thought-card">
+      <div class="thought-eyebrow">Мысль дня</div>
+      <div class="thought-text" id="thoughtText"></div>
+    </div>
+
     <div class="streak-strip">
-      <div class="glass-card streak-chip"><div class="streak-num">3</div><div class="streak-label">дня подряд</div></div>
-      <div class="glass-card streak-chip"><div class="streak-num">12</div><div class="streak-label">практик</div></div>
-      <div class="glass-card streak-chip"><div class="streak-num">144</div><div class="streak-label">минут</div></div>
+      <div class="glass-card streak-chip">
+        <div class="streak-num" id="tStreak">0</div>
+        <div class="streak-label">дней подряд</div>
+      </div>
+      <div class="glass-card streak-chip">
+        <div class="streak-num" id="tSessions">0</div>
+        <div class="streak-label">практик</div>
+      </div>
+      <div class="glass-card streak-chip">
+        <div class="streak-num" id="tMinutes">0</div>
+        <div class="streak-label">минут</div>
+      </div>
+    </div>
+
+    <!-- 7-day program, expandable -->
+    <div class="glass-card program-banner" id="programCard">
+      <div class="program-head" onclick="toggleExpand('programCard')">
+        <div class="program-info">
+          <div class="pr-eyebrow">Программа</div>
+          <div class="pr-title">5 дней возвращения к себе</div>
+          <div class="pr-progress">путь по пяти уровням жизни · нажмите, чтобы раскрыть</div>
+        </div>
+        <div class="chev">▼</div>
+      </div>
+      <div class="program-days">
+        <div class="day-row"><div class="day-num">День 1</div><div class="day-name"><b>Точка А.</b> Честная встреча с собой: диагностика состояния на пяти уровнях — тело, эмоции, психика, дело, дух. Увидеть, где ты сейчас — без осуждения, с ясностью</div></div>
+        <div class="day-row"><div class="day-num">День 2</div><div class="day-name"><b>Тело.</b> Физический уровень: вернуться в тело как в дом. Энергия, дыхание, ощущение жизни в каждой клетке</div></div>
+        <div class="day-row"><div class="day-num">День 3</div><div class="day-name"><b>Чувства.</b> Эмоциональный уровень: разрешить себе чувствовать всё. За подавленными эмоциями заперта твоя сила</div></div>
+        <div class="day-row"><div class="day-num">День 4</div><div class="day-name"><b>Дело и доход.</b> Уровень реализации: деятельность как продолжение тебя. Доход — зеркало самоценности, и это зеркало можно изменить</div></div>
+        <div class="day-row"><div class="day-num">День 5</div><div class="day-name"><b>Источник.</b> Духовный уровень: встреча с Мета‑Я. Точка соединения с источником — место, из которого создаётся новая реальность</div></div>
+        <div class="program-cta">
+          <button class="glass-pill gold" onclick="haptic('light')">Начать день 1</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Philosophy, expandable -->
+    <div class="glass-card philosophy" id="philosophyCard">
+      <div class="program-head" onclick="toggleExpand('philosophyCard')">
+        <div class="program-info">
+          <div class="pr-eyebrow">Манифест</div>
+          <div class="pr-title">Философия VERUM</div>
+        </div>
+        <div class="chev">▼</div>
+      </div>
+      <div class="philosophy-text">
+        <div class="manifesto">
+          <p>VERUM — это <em>пространство встречи с собой настоящей</em>. Не с той, которой тебя научили быть. Не с той, которую от тебя ждут. А с той, которая была всегда — до ролей, до масок, до чужих голосов.</p>
+          <p>Здесь ты соединяешься с <em>источником</em> — с тем местом внутри, откуда рождается всё: твоя энергия, твои решения, твоя жизнь. Оно никогда не исчезало. Ты просто перестала слышать.</p>
+          <p>И отсюда начинается главное — <em>навык управления своей реальностью</em>. Не борьба с обстоятельствами, а творение из глубины. Когда меняешься ты — меняется всё.</p>
+          <p>Истина внутри. Всегда была.</p>
+          <p class="m-sign">— Анна VERUM</p>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- LIBRARY SCREEN -->
+  <!-- ===== LIBRARY ===== -->
   <div class="screen" id="screen-library">
-    <!-- ВОЗВРАЩЕННЫЕ УРОВНИ -->
-    <div class="level-tabs">
-      <div class="level-tab active" data-level="body" onclick="switchCategory('body')">УРОВЕНЬ I · ТЕЛО</div>
-      <div class="level-tab" data-level="mind" onclick="switchCategory('mind')">УРОВЕНЬ II · ПСИХИКА</div>
-      <div class="level-tab" data-level="soul" onclick="switchCategory('soul')">УРОВЕНЬ III · ВЫСШЕЕ Я</div>
-    </div>
-
-    <div class="level-desc" id="levelDesc">Заземление, освобождение от физического напряжения и возвращение в настоящий момент.</div>
+    <div class="cat-scroll" id="catScroll"></div>
+    <div class="lib-note">каждая практика отмечена уровнем метода: I Тело · II Психика · III Мета‑Я</div>
     <div class="med-list" id="medList"></div>
   </div>
 
-  <!-- TIMER SCREEN -->
+  <!-- ===== TIMER ===== -->
   <div class="screen" id="screen-timer">
     <div class="timer-wrap">
       <div class="mode-toggle">
-        <button class="mode-btn active">ТАЙМЕР</button>
+        <button class="mode-btn active" data-mode="timer" onclick="switchMode('timer')">ТАЙМЕР</button>
+        <button class="mode-btn" data-mode="breath" onclick="switchMode('breath')">ДЫХАНИЕ</button>
       </div>
-      <div class="duration-select">
-        <button class="dur-btn">5 мин</button>
-        <button class="dur-btn active">10 мин</button>
-        <button class="dur-btn">20 ...</button>
+
+      <div class="duration-select" id="durationSelect">
+        <button class="dur-btn" data-mins="5">5 мин</button>
+        <button class="dur-btn active" data-mins="10">10 мин</button>
+        <button class="dur-btn" data-mins="20">20 мин</button>
+        <button class="dur-btn" data-mins="30">30 мин</button>
       </div>
+
+      <div class="pattern-row" id="patternRow" style="display:none">
+        <button class="dur-btn active" data-pattern="box">Квадратное 4·4·4·4</button>
+        <button class="dur-btn" data-pattern="478">4·7·8</button>
+        <button class="dur-btn" data-pattern="calm">Успокоение 4·6</button>
+      </div>
+
+      <div class="sound-row" id="soundRow">
+        <div class="sound-label">Звук</div>
+        <button class="dur-btn active" data-sound="none">Тишина</button>
+        <button class="dur-btn" data-sound="ocean">Океан</button>
+        <button class="dur-btn" data-sound="rain">Дождь</button>
+        <button class="dur-btn" data-sound="om">Ом</button>
+        <button class="dur-btn" data-sound="bowls">Чаши</button>
+        <button class="dur-btn" data-sound="hz432">Гармония · 432</button>
+        <button class="dur-btn" data-sound="hz963">Источник · 963</button>
+      </div>
+
       <div class="ring-stage">
-        <div class="glass-sphere"></div>
+        <div class="glass-sphere" id="glassSphere"></div>
         <svg class="ring-svg" viewBox="0 0 250 250">
+          <defs>
+            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#d9c298"/>
+              <stop offset="100%" stop-color="#8b7dbe"/>
+            </linearGradient>
+          </defs>
           <circle class="ring-bg" cx="125" cy="125" r="115"/>
+          <circle class="ring-progress" cx="125" cy="125" r="115" id="ringProgress"/>
         </svg>
         <div class="ring-center">
-          <div class="timer-display">10:00</div>
-          <div class="timer-label">минут тишины</div>
+          <div class="timer-display" id="timerDisplay">10:00</div>
+          <div class="timer-label" id="timerLabel">минут тишины</div>
+          <div class="breath-phase-label" id="phaseLabel" style="display:none"></div>
         </div>
       </div>
+
       <div class="timer-controls">
-        <button class="ctrl-glass">↺</button>
-        <button class="play-glass">▶</button>
-        <button class="ctrl-glass">✓</button>
+        <button class="ctrl-glass" id="resetBtn">↺</button>
+        <button class="play-glass" id="playBtn">▶</button>
+        <button class="ctrl-glass" id="doneBtn">✓</button>
+      </div>
+
+      <div class="session-note" id="sessionNote">выберите продолжительность и начните</div>
+    </div>
+  </div>
+
+  <!-- ===== PROGRAMS ===== -->
+  <div class="screen" id="screen-programs">
+    <div class="prog-intro">Когда практика становится фундаментом —<br>приходит время строить на нём жизнь</div>
+
+    <div class="glass-card prog-card">
+      <div class="prog-eyebrow">Аудиокурс</div>
+      <div class="prog-title">Деньги и самоценность</div>
+      <div class="prog-desc">5 лекций и практик о связи между внутренней ценностью и внешним изобилием. Почему доход упирается в потолок — и как этот потолок растворяется, когда меняется идентичность.</div>
+      <div class="prog-foot">
+        <div class="prog-meta">5 ЛЕКЦИЙ · 5 ПРАКТИК</div>
+        <button class="glass-pill gold" onclick="openBot()">Открыть</button>
+      </div>
+    </div>
+
+    <div class="glass-card prog-card featured">
+      <div class="prog-eyebrow">Флагманский курс</div>
+      <div class="prog-title">Искусство управления своей жизнью</div>
+      <div class="prog-desc">Полное погружение в метод VERUM: три уровня — тело, психика, Мета‑Я. Курс о том, как перестать быть персонажем своей истории и стать её автором.</div>
+      <div class="prog-foot">
+        <div class="prog-meta">МЕТОД VERUM · 3 УРОВНЯ</div>
+        <button class="glass-pill gold" onclick="openBot()">Подробнее</button>
+      </div>
+    </div>
+
+    <div class="glass-card prog-card">
+      <div class="prog-eyebrow">Индивидуально</div>
+      <div class="prog-title">Наставничество с Анной</div>
+      <div class="prog-desc">Личное сопровождение трансформации: глубинная работа с идентичностью, доходом и самореализацией. Ограниченное число мест.</div>
+      <div class="prog-foot">
+        <div class="prog-meta">ЛИЧНАЯ РАБОТА</div>
+        <button class="glass-pill" onclick="openBot()">Оставить заявку</button>
       </div>
     </div>
   </div>
 
-  <!-- PATH SCREEN -->
+  <!-- ===== PATH ===== -->
   <div class="screen" id="screen-path">
-    <div class="section-eyebrow">Календарь осознанности</div>
+    <div class="stats-row">
+      <div class="glass-card streak-chip">
+        <div class="streak-num" id="statStreak">0</div>
+        <div class="streak-label">дней подряд</div>
+      </div>
+      <div class="glass-card streak-chip">
+        <div class="streak-num" id="statTotal">0</div>
+        <div class="streak-label">всего сессий</div>
+      </div>
+      <div class="glass-card streak-chip">
+        <div class="streak-num" id="statMinutes">0</div>
+        <div class="streak-label">минут</div>
+      </div>
+    </div>
+
+    <div class="section-eyebrow">Последние 28 дней</div>
     <div class="glass-card cal-card">
       <div class="cal-grid" id="calGrid"></div>
     </div>
+
+    <div class="section-eyebrow">История практик</div>
+    <div class="history-list" id="historyList"></div>
   </div>
 </div>
 
-<!-- НАВИГАЦИЯ С ГЕОМЕТРИЧЕСКИМИ СИМВОЛАМИ -->
 <nav class="dock">
   <div class="dock-item active" data-screen="today" onclick="nav('today')">
-    <i class="d-icon">✦</i><div class="d-label">Сегодня</div>
+    <div class="d-icon">☼</div><div class="d-label">Сегодня</div>
   </div>
   <div class="dock-item" data-screen="library" onclick="nav('library')">
-    <i class="d-icon">☉</i><div class="d-label">Каталог</div>
+    <div class="d-icon">✦</div><div class="d-label">Практики</div>
   </div>
   <div class="dock-item" data-screen="timer" onclick="nav('timer')">
-    <i class="d-icon">◌</i><div class="d-label">Таймер</div>
+    <div class="d-icon">◌</div><div class="d-label">Таймер</div>
+  </div>
+  <div class="dock-item" data-screen="programs" onclick="nav('programs')">
+    <div class="d-icon">◈</div><div class="d-label">Программы</div>
   </div>
   <div class="dock-item" data-screen="path" onclick="nav('path')">
-    <i class="d-icon">✧</i><div class="d-label">Путь</div>
+    <div class="d-icon">✧</div><div class="d-label">Путь</div>
   </div>
 </nav>
 
+<div class="completion" id="wakeModal">
+  <div class="completion-orb">☼</div>
+  <h2>Экран должен гореть</h2>
+  <p>Не гасите экран во время практики —<br>иначе она прервётся.<br>Мы попросим телефон не засыпать.</p>
+  <button class="glass-pill gold" id="wakeConfirmBtn">Понятно, начинаем</button>
+</div>
+
+<div class="completion" id="completion">
+  <div class="completion-orb">◯</div>
+  <h2>Сессия завершена</h2>
+  <p id="completionMsg"></p>
+  <button class="glass-pill gold" id="completionBtn">Вернуться</button>
+</div>
+
 <script>
+// ===== TELEGRAM =====
 const tg = window.Telegram?.WebApp;
+let cloudAvailable = false;
+
 if (tg) {
-  tg.ready(); tg.expand();
-  tg.setHeaderColor('#0d0f1c'); tg.setBackgroundColor('#0d0f1c');
-  const user = tg.initDataUnsafe?.user;
-  if (user?.first_name) document.getElementById('greeting').textContent = user.first_name;
+  tg.ready();
+  tg.expand();
+  tg.setHeaderColor('#0c0e1a');
+  tg.setBackgroundColor('#0c0e1a');
+  if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
+  cloudAvailable = !!(tg.CloudStorage && tg.isVersionAtLeast && tg.isVersionAtLeast('6.9'));
 }
 
 function haptic(type) {
-  if (tg?.HapticFeedback && type === 'light') tg.HapticFeedback.impactOccurred('light');
+  if (tg?.HapticFeedback) {
+    if (type === 'light') tg.HapticFeedback.impactOccurred('light');
+    else if (type === 'success') tg.HapticFeedback.notificationOccurred('success');
+  }
 }
 
-function nav(screenName) {
+function openBot() {
   haptic('light');
-  document.querySelectorAll('.dock-item').forEach(d => d.classList.toggle('active', d.dataset.screen === screenName));
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-' + screenName).classList.add('active');
+  // ЗАМЕНИ на ссылку своего бота или страницу оплаты:
+  if (tg) tg.openTelegramLink('https://t.me/ВАШ_БОТ');
+  else window.open('https://t.me/ВАШ_БОТ', '_blank');
+}
+
+function toggleExpand(id) {
+  haptic('light');
+  document.getElementById(id).classList.toggle('expanded');
+}
+
+// ===== 60 МЫСЛЕЙ ДНЯ =====
+const thoughts = [
+  'Ты не улучшаешь себя — ты вспоминаешь себя.',
+  'Реальность отвечает не словам, а состоянию.',
+  'Тишина — не отсутствие звука, а присутствие тебя.',
+  'Всё, что ты ищешь, ищет тебя изнутри.',
+  'Ты не в мире — мир в тебе.',
+  'Покой не нужно достигать. В него можно вернуться.',
+  'Твоя глубина — твой самый большой капитал.',
+  'Между стимулом и реакцией живёт твоя свобода.',
+  'Изобилие — это состояние, а не сумма.',
+  'Ты — не мысли. Ты — та, кто их слышит.',
+  'Источник не снаружи. Он бьётся в тебе.',
+  'Новая жизнь начинается с новой идентичности.',
+  'Отпуская старое, ты освобождаешь место чуду.',
+  'Страх — это дверь. Пройди её.',
+  'Ты создаёшь не действиями, а бытием.',
+  'Тело — храм, дыхание — молитва.',
+  'Сегодня — единственное место, где живёт жизнь.',
+  'Твоя ценность не требует доказательств.',
+  'Вселенная говорит с тобой через тишину.',
+  'Кризис — это роды новой тебя.',
+  'Не проси у жизни — стань этим.',
+  'Внутренний конфликт заканчивается там, где начинается принятие.',
+  'Ты достойна не потому что. Просто достойна.',
+  'Деньги приходят к той, кто разрешила себе быть.',
+  'Управлять реальностью — значит управлять вниманием.',
+  'Всё уже есть. Осталось это увидеть.',
+  'Твоя энергия — твоя валюта.',
+  'Границы — это любовь к себе в действии.',
+  'Чем глубже корни, тем выше крона.',
+  'Прошлое — учитель, не тюрьма.',
+  'Пробуждение — это не событие, а путь.',
+  'Слушай тело: оно мудрее спешащего ума.',
+  'Ты не одна. Ты — часть целого.',
+  'Самое смелое — быть собой настоящей.',
+  'Каждый вдох — новое начало.',
+  'Мечта — это память о будущем.',
+  'Отдых — не награда, а право.',
+  'Там, где внимание — там жизнь.',
+  'Сомнение — просто мысль. Не факт.',
+  'Благодарность превращает достаточно в изобилие.',
+  'Твоё «нет» другим — это «да» себе.',
+  'Мягкость — это сила, которая не ломается.',
+  'Истина не кричит. Она шепчет изнутри.',
+  'Ты — автор, а не персонаж своей истории.',
+  'Всё временно. И это освобождает.',
+  'Любовь к себе — фундамент любой реальности.',
+  'Не торопи рассвет — он всегда приходит.',
+  'Твоя чувствительность — дар, не слабость.',
+  'Простота — высшая форма глубины.',
+  'Что ты излучаешь, то и притягиваешь.',
+  'Взросление души — это возвращение к простоте.',
+  'Ответы приходят в тишине между мыслями.',
+  'Ты можешь начать заново в любой момент.',
+  'Контроль отпускает та, кто доверяет себе.',
+  'Внутри тебя уже есть всё для следующего шага.',
+  'Настоящее богатство — быть в ладу с собой.',
+  'Не бойся пустоты: из неё рождается новое.',
+  'Твоя жизнь слушает твои слова о ней.',
+  'Свет не борется с тьмой — он просто светит.',
+  'Встреча с собой — главная встреча жизни.'
+];
+
+// мысль дня — стабильна в течение суток, меняется ежедневно
+const dayIndex = Math.floor(Date.now() / 86400000) % thoughts.length;
+document.getElementById('thoughtText').textContent = '«' + thoughts[dayIndex] + '»';
+
+// ===== STORAGE =====
+let sessions = [];
+
+function loadSessions(cb) {
+  if (cloudAvailable) {
+    tg.CloudStorage.getItem('verum_sessions', (err, value) => {
+      if (!err && value) { try { sessions = JSON.parse(value); } catch(e) { sessions = []; } }
+      else sessions = JSON.parse(localStorage.getItem('verum_sessions') || '[]');
+      cb();
+    });
+  } else {
+    sessions = JSON.parse(localStorage.getItem('verum_sessions') || '[]');
+    cb();
+  }
+}
+
+function saveSessions() {
+  const data = JSON.stringify(sessions.slice(0, 200));
+  localStorage.setItem('verum_sessions', data);
+  if (cloudAvailable) tg.CloudStorage.setItem('verum_sessions', data, () => {});
 }
 
 const months = ['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
 const days = ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
 const now = new Date();
-document.getElementById('todayDate').textContent = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()];
+document.getElementById('todayDate').textContent =
+  days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()];
 
-// Обновленная структура уровней
-const library = {
-  body: {
-    desc: 'Заземление, освобождение от физического напряжения и возвращение в настоящий момент.',
-    items: [
-      { name: 'Дыхание рассвета', desc: 'Мягкое включение тела и запуск энергии', dur: '12 мин' },
-      { name: 'Сканирование проводника', desc: 'Снятие мышечных блоков слой за слоем', dur: '18_мин' }
-    ]
-  },
-  mind: {
-    desc: 'Наблюдение за мыслями, разотождествление с эмоциями, снижение тревожности.',
-    items: [
-      { name: 'Распутывание мыслей', desc: 'Практика наблюдения за ментальным шумом', dur: '15 мин' },
-      { name: 'Очищение пространства', desc: 'Освобождение от накопленного за день стресса', dur: '10_мин' }
-    ]
-  },
-  soul: {
-    desc: 'Соприкосновение с чистым сознанием, тишиной и природой своего Я.',
-    items: [
-      { name: 'Чистое присутствие', desc: 'Созерцание того, кто наблюдает мысли', dur: '20 мин' }
-    ]
-  }
-};
-
-function switchCategory(cat) {
+// ===== NAV =====
+function nav(name) {
   haptic('light');
-  document.querySelectorAll('.level-tab').forEach(t => t.classList.toggle('active', t.dataset.level === cat));
-  document.getElementById('levelDesc').textContent = library[cat].desc;
-  renderMeds(cat);
+  document.querySelectorAll('.dock-item').forEach(d =>
+    d.classList.toggle('active', d.dataset.screen === name));
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  if (name === 'path') renderPath();
+  if (name === 'today') renderTodayStats();
 }
 
-function renderMeds(cat) {
-  const list = document.getElementById('medList');
-  list.innerHTML = '';
-  library[cat].items.forEach(m => {
-    const card = document.createElement('div');
-    card.className = 'glass-card med-card';
-    card.innerHTML = `
-      <div class="med-icon">▶</div>
-      <div class="med-body">
-        <div class="med-name">${m.name}</div>
-        <div class="med-desc">${m.desc}</div>
-      </div>
-      <div class="med-dur">${m.dur}</div>
-    `;
-    list.appendChild(card);
+// ===== LIBRARY: категории + уровни метода =====
+const categories = ['Все', 'Тревожность', 'Самоценность', 'Деньги', 'Отношения', 'Здоровье', 'Кризис'];
+
+const meditations = [
+  { name: 'Дыхание рассвета', desc: 'Мягкое пробуждение тела', dur: '12 мин', level: 'I · Тело', cat: 'Здоровье', free: true },
+  { name: 'Растворение тревоги', desc: 'Практика для острых состояний', dur: '14 мин', level: 'II · Психика', cat: 'Тревожность', free: false },
+  { name: 'Заземление', desc: 'Возвращение опоры и устойчивости', dur: '10 мин', level: 'I · Тело', cat: 'Тревожность', free: false },
+  { name: 'Я — ценность', desc: 'Возвращение права быть собой', dur: '16 мин', level: 'II · Психика', cat: 'Самоценность', free: false },
+  { name: 'Разрешение на изобилие', desc: 'Растворение денежных блоков', dur: '20 мин', level: 'II · Психика', cat: 'Деньги', free: false },
+  { name: 'Я — создатель', desc: 'Практика творения из единства', dur: '20 мин', level: 'III · Мета‑Я', cat: 'Деньги', free: false },
+  { name: 'Сканирование тела', desc: 'Снятие напряжения слой за слоем', dur: '18 мин', level: 'I · Тело', cat: 'Здоровье', free: false },
+  { name: 'Встреча с Я‑1 и Я‑2', desc: 'Диалог внутренних частей', dur: '20 мин', level: 'II · Психика', cat: 'Кризис', free: false },
+  { name: 'Сердце открывается', desc: 'Практика близости без страха', dur: '15 мин', level: 'II · Психика', cat: 'Отношения', free: false },
+  { name: 'Прощание с ролью', desc: 'Отпустить отжившую идентичность', dur: '22 мин', level: 'II · Психика', cat: 'Кризис', free: false },
+  { name: 'Встреча с Мета‑Я', desc: 'Первое знакомство с высшим планом', dur: '25 мин', level: 'III · Мета‑Я', cat: 'Самоценность', free: false },
+  { name: 'Растворение границ', desc: 'Опыт недвойственности', dur: '30 мин', level: 'III · Мета‑Я', cat: 'Кризис', free: false },
+  { name: 'Вечернее расслабление', desc: 'Отпустить день, подготовиться ко сну', dur: '15 мин', level: 'I · Тело', cat: 'Здоровье', free: false },
+  { name: 'Тишина за мыслями', desc: 'Чистое присутствие', dur: '15 мин', level: 'III · Мета‑Я', cat: 'Тревожность', free: false },
+];
+
+// ===== ПРАКТИКА ДНЯ: автоматическая ротация =====
+// Каждый день показывается следующая медитация из библиотеки по кругу.
+// С 10 медитациями цикл повторяется каждые 10 дней; добавишь новые — цикл удлинится сам.
+const daily = meditations[dayIndex % meditations.length];
+document.getElementById('dailyName').textContent = daily.name;
+document.getElementById('dailyDur').textContent =
+  daily.dur.toUpperCase() + ' · УРОВЕНЬ ' + daily.level.toUpperCase();
+
+let activeCat = 'Все';
+
+function renderCats() {
+  const scroll = document.getElementById('catScroll');
+  scroll.innerHTML = '';
+  categories.forEach(c => {
+    const chip = document.createElement('div');
+    chip.className = 'cat-chip' + (c === activeCat ? ' active' : '');
+    chip.textContent = c;
+    chip.onclick = () => { haptic('light'); activeCat = c; renderCats(); renderMeds(); };
+    scroll.appendChild(chip);
   });
 }
 
-const cal = document.getElementById('calGrid');
-for(let i=1; i<=28; i++) {
-  const d = document.createElement('div');
-  d.className = 'cal-day' + (i % 6 === 0 ? ' practiced' : '');
-  d.textContent = i;
-  cal.appendChild(d);
+function renderMeds() {
+  const list = document.getElementById('medList');
+  list.innerHTML = '';
+  meditations
+    .filter(m => activeCat === 'Все' || m.cat === activeCat)
+    .forEach(m => {
+      const card = document.createElement('div');
+      card.className = 'glass-card med-card';
+      card.onclick = () => haptic('light');
+      card.innerHTML = `
+        <div class="med-icon">${m.free ? '▶' : '✦'}</div>
+        <div class="med-body">
+          <div class="med-name">${m.name}</div>
+          <div class="med-tags">
+            <span class="level-badge">${m.level}</span>
+            <span class="med-desc">${m.desc}</span>
+          </div>
+        </div>
+        <div class="med-dur">${m.dur}</div>
+        ${m.free ? '' : '<div class="lock-chip">🔒</div>'}
+      `;
+      list.appendChild(card);
+    });
 }
 
-renderMeds('body');
+renderCats();
+renderMeds();
+
+// ===== SOUND ENGINE (Web Audio, без файлов) =====
+let audioCtx = null;
+let soundNodes = [];
+let currentSound = 'none';
+
+document.querySelectorAll('#soundRow .dur-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    haptic('light');
+    document.querySelectorAll('#soundRow .dur-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentSound = btn.dataset.sound;
+    if (timerRunning || breathRunning) startSound(currentSound);
+  });
+});
+
+function ensureCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function makeNoiseBuffer() {
+  const len = audioCtx.sampleRate * 2;
+  const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+  const d = buf.getChannelData(0);
+  let last = 0;
+  for (let i = 0; i < len; i++) {
+    const white = Math.random() * 2 - 1;
+    last = (last + 0.02 * white) / 1.02; // brown-ish
+    d[i] = last * 3.5;
+  }
+  return buf;
+}
+
+function startSound(type) {
+  stopSound();
+  if (type === 'none') return;
+  ensureCtx();
+  const master = audioCtx.createGain();
+  master.gain.value = 0;
+  master.connect(audioCtx.destination);
+  master.gain.linearRampToValueAtTime(0.14, audioCtx.currentTime + 2.5);
+  soundNodes.push(master);
+
+  if (type === 'ocean' || type === 'rain') {
+    const src = audioCtx.createBufferSource();
+    src.buffer = makeNoiseBuffer();
+    src.loop = true;
+    const filter = audioCtx.createBiquadFilter();
+    if (type === 'ocean') {
+      filter.type = 'lowpass';
+      filter.frequency.value = 420;
+      // волны — медленная модуляция громкости
+      const lfo = audioCtx.createOscillator();
+      const lfoGain = audioCtx.createGain();
+      lfo.frequency.value = 0.09;
+      lfoGain.gain.value = 0.06;
+      lfo.connect(lfoGain);
+      lfoGain.connect(master.gain);
+      lfo.start();
+      soundNodes.push(lfo);
+    } else {
+      filter.type = 'bandpass';
+      filter.frequency.value = 2400;
+      filter.Q.value = 0.6;
+    }
+    src.connect(filter);
+    filter.connect(master);
+    src.start();
+    soundNodes.push(src, filter);
+  }
+
+  if (type === 'om') {
+    [108, 216, 324].forEach((f, i) => {
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = f;
+      g.gain.value = [0.5, 0.2, 0.08][i];
+      osc.connect(g);
+      g.connect(master);
+      osc.start();
+      soundNodes.push(osc, g);
+    });
+  }
+
+  if (type === 'hz432' || type === 'hz963') {
+    const f = type === 'hz432' ? 432 : 963;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = f;
+    g.gain.value = type === 'hz432' ? 0.4 : 0.16;
+    osc.connect(g);
+    g.connect(master);
+    osc.start();
+    soundNodes.push(osc, g);
+    // мягкое живое мерцание громкости
+    const lfo = audioCtx.createOscillator();
+    const lg = audioCtx.createGain();
+    lfo.frequency.value = 0.12;
+    lg.gain.value = 0.04;
+    lfo.connect(lg);
+    lg.connect(master.gain);
+    lfo.start();
+    soundNodes.push(lfo, lg);
+    // тёплая нижняя октава для 432
+    if (f === 432) {
+      const o2 = audioCtx.createOscillator();
+      const g2 = audioCtx.createGain();
+      o2.type = 'sine';
+      o2.frequency.value = 216;
+      g2.gain.value = 0.18;
+      o2.connect(g2);
+      g2.connect(master);
+      o2.start();
+      soundNodes.push(o2, g2);
+    }
+  }
+
+  if (type === 'bowls') {
+    [[220, 220.6], [329.6, 330.1]].forEach((pair, pi) => {
+      pair.forEach(f => {
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = f;
+        g.gain.value = pi === 0 ? 0.22 : 0.09;
+        osc.connect(g);
+        g.connect(master);
+        osc.start();
+        soundNodes.push(osc, g);
+      });
+    });
+  }
+}
+
+function stopSound() {
+  soundNodes.forEach(n => {
+    try { if (n.stop) n.stop(); } catch(e) {}
+    try { n.disconnect(); } catch(e) {}
+  });
+  soundNodes = [];
+}
+
+// ===== TIMER / BREATH =====
+let mode = 'timer';
+let timerDuration = 10 * 60;
+let timerRemaining = timerDuration;
+let timerRunning = false;
+let timerInterval = null;
+
+const patterns = {
+  box: { in: 4, holdIn: 4, out: 4, holdOut: 4 },
+  '478': { in: 4, holdIn: 7, out: 8, holdOut: 0 },
+  calm: { in: 4, holdIn: 0, out: 6, holdOut: 0 }
+};
+let currentPattern = 'box';
+let breathRunning = false;
+let breathCycles = 0;
+let breathTimeout = null;
+
+function switchMode(m) {
+  haptic('light');
+  if (timerRunning) pauseTimer();
+  if (breathRunning) stopBreath(false);
+  mode = m;
+  document.querySelectorAll('.mode-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.mode === m));
+  document.getElementById('durationSelect').style.display = m === 'timer' ? 'flex' : 'none';
+  document.getElementById('patternRow').style.display = m === 'breath' ? 'flex' : 'none';
+  document.getElementById('phaseLabel').style.display = m === 'breath' ? 'block' : 'none';
+
+  if (m === 'timer') {
+    document.getElementById('timerLabel').textContent = 'минут тишины';
+    updateTimerDisplay();
+    document.getElementById('sessionNote').textContent = 'выберите продолжительность и начните';
+  } else {
+    document.getElementById('timerLabel').textContent = 'циклов: 0';
+    document.getElementById('timerDisplay').textContent = '—';
+    document.getElementById('phaseLabel').textContent = '';
+    document.getElementById('sessionNote').textContent = 'выберите технику и начните';
+  }
+}
+
+document.querySelectorAll('#durationSelect .dur-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (timerRunning) return;
+    haptic('light');
+    document.querySelectorAll('#durationSelect .dur-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    timerDuration = parseInt(btn.dataset.mins) * 60;
+    timerRemaining = timerDuration;
+    updateTimerDisplay();
+    updateRing(0);
+  });
+});
+
+document.querySelectorAll('#patternRow .dur-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (breathRunning) return;
+    haptic('light');
+    document.querySelectorAll('#patternRow .dur-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentPattern = btn.dataset.pattern;
+  });
+});
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerRemaining / 60);
+  const s = timerRemaining % 60;
+  document.getElementById('timerDisplay').textContent =
+    String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+function updateRing(progress) {
+  const c = 2 * Math.PI * 115;
+  document.getElementById('ringProgress').style.strokeDashoffset = c * (1 - progress);
+}
+
+// ===== WAKE LOCK: не гасить экран во время практики =====
+let wakeLock = null;
+let pendingStart = null;
+
+async function requestWake() {
+  try {
+    if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen');
+  } catch (e) {}
+}
+
+function releaseWake() {
+  try { if (wakeLock) { wakeLock.release(); wakeLock = null; } } catch (e) {}
+}
+
+// если экран всё же гас — при возвращении снова просим не засыпать
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && (timerRunning || breathRunning)) requestWake();
+});
+
+function askWakeThen(fn) {
+  pendingStart = fn;
+  document.getElementById('wakeModal').classList.add('show');
+}
+
+document.getElementById('wakeConfirmBtn').addEventListener('click', () => {
+  haptic('light');
+  document.getElementById('wakeModal').classList.remove('show');
+  requestWake();
+  if (pendingStart) { const f = pendingStart; pendingStart = null; f(); }
+});
+
+document.getElementById('playBtn').addEventListener('click', () => {
+  haptic('light');
+  if (mode === 'timer') {
+    if (timerRunning) pauseTimer();
+    else askWakeThen(startTimer);
+  } else {
+    if (breathRunning) stopBreath(true);
+    else askWakeThen(startBreath);
+  }
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  haptic('light');
+  if (mode === 'timer') resetTimer();
+  else stopBreath(false);
+});
+
+document.getElementById('doneBtn').addEventListener('click', () => {
+  if (mode === 'timer' && timerDuration - timerRemaining >= 30) completeTimer();
+  else if (mode === 'breath' && breathCycles >= 3) stopBreath(true);
+});
+
+let timerEndAt = null;
+
+function startTimer() {
+  timerRunning = true;
+  timerEndAt = Date.now() + timerRemaining * 1000;
+  document.getElementById('playBtn').textContent = '⏸';
+  document.getElementById('sessionNote').textContent = 'дышите... вы здесь';
+  startSound(currentSound);
+  const sphere = document.getElementById('glassSphere');
+
+  timerInterval = setInterval(() => {
+    // отсчёт по реальному времени — переживает погасший экран
+    timerRemaining = Math.max(0, Math.round((timerEndAt - Date.now()) / 1000));
+    updateTimerDisplay();
+    updateRing(1 - (timerRemaining / timerDuration));
+    if (timerRemaining % 8 < 4) { sphere.classList.add('inhale'); sphere.classList.remove('exhale'); }
+    else { sphere.classList.add('exhale'); sphere.classList.remove('inhale'); }
+    if (timerRemaining <= 0) completeTimer();
+  }, 1000);
+}
+
+function pauseTimer() {
+  timerRunning = false;
+  clearInterval(timerInterval);
+  stopSound();
+  releaseWake();
+  document.getElementById('playBtn').textContent = '▶';
+  document.getElementById('sessionNote').textContent = 'пауза — вернитесь когда готовы';
+}
+
+function resetTimer() {
+  pauseTimer();
+  timerRemaining = timerDuration;
+  updateTimerDisplay();
+  updateRing(0);
+  document.getElementById('sessionNote').textContent = 'выберите продолжительность и начните';
+  document.getElementById('glassSphere').className = 'glass-sphere';
+}
+
+function completeTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  stopSound();
+  releaseWake();
+  haptic('success');
+  const mins = Math.max(1, Math.round((timerDuration - timerRemaining) / 60));
+  sessions.unshift({ date: new Date().toISOString(), type: 'Медитация тишины', minutes: mins });
+  saveSessions();
+  document.getElementById('completionMsg').innerHTML =
+    `Вы провели ${mins} мин в тишине.<br>Практика становится частью вас.`;
+  document.getElementById('completion').classList.add('show');
+  resetTimer();
+}
+
+document.getElementById('completionBtn').addEventListener('click', () => {
+  haptic('light');
+  document.getElementById('completion').classList.remove('show');
+});
+
+function startBreath() {
+  breathRunning = true;
+  breathCycles = 0;
+  document.getElementById('playBtn').textContent = '⏸';
+  document.getElementById('timerLabel').textContent = 'циклов: 0';
+  document.getElementById('sessionNote').textContent = 'следуйте за сферой';
+  startSound(currentSound);
+  runBreathPhase('in');
+}
+
+function stopBreath(save) {
+  const wasRunning = breathRunning;
+  breathRunning = false;
+  clearTimeout(breathTimeout);
+  stopSound();
+  releaseWake();
+  document.getElementById('playBtn').textContent = '▶';
+  document.getElementById('phaseLabel').textContent = '';
+  document.getElementById('timerDisplay').textContent = '—';
+  document.getElementById('sessionNote').textContent = 'выберите технику и начните';
+  const sphere = document.getElementById('glassSphere');
+  sphere.style.transition = 'transform 0.8s ease';
+  sphere.style.transform = 'scale(1)';
+
+  if (save && wasRunning && breathCycles >= 3) {
+    const p = patterns[currentPattern];
+    const cycleSec = p.in + p.holdIn + p.out + p.holdOut;
+    const mins = Math.max(1, Math.round(breathCycles * cycleSec / 60));
+    sessions.unshift({ date: new Date().toISOString(), type: 'Дыхательная практика', minutes: mins });
+    saveSessions();
+    haptic('success');
+    document.getElementById('completionMsg').innerHTML =
+      `${breathCycles} циклов дыхания.<br>Нервная система благодарит.`;
+    document.getElementById('completion').classList.add('show');
+  }
+}
+
+function runBreathPhase(phase) {
+  if (!breathRunning) return;
+  const p = patterns[currentPattern];
+  const sphere = document.getElementById('glassSphere');
+  const labels = { in: 'вдох', holdIn: 'задержка', out: 'выдох', holdOut: 'задержка' };
+  const dur = p[phase];
+
+  document.getElementById('phaseLabel').textContent = labels[phase];
+
+  if (phase === 'in') {
+    sphere.style.transition = `transform ${dur}s ease-in-out, box-shadow ${dur}s ease-in-out`;
+    sphere.style.transform = 'scale(1.12)';
+    haptic('light');
+  } else if (phase === 'out') {
+    sphere.style.transition = `transform ${dur}s ease-in-out, box-shadow ${dur}s ease-in-out`;
+    sphere.style.transform = 'scale(0.92)';
+    haptic('light');
+  }
+
+  let remaining = dur;
+  document.getElementById('timerDisplay').textContent = remaining;
+  const ci = setInterval(() => {
+    remaining--;
+    if (remaining > 0) document.getElementById('timerDisplay').textContent = remaining;
+    else clearInterval(ci);
+  }, 1000);
+
+  breathTimeout = setTimeout(() => {
+    clearInterval(ci);
+    const seq = ['in', 'holdIn', 'out', 'holdOut'];
+    let next = seq[(seq.indexOf(phase) + 1) % 4];
+    while (patterns[currentPattern][next] === 0 && next !== 'in') {
+      next = seq[(seq.indexOf(next) + 1) % 4];
+    }
+    if (next === 'in') {
+      breathCycles++;
+      document.getElementById('timerLabel').textContent = 'циклов: ' + breathCycles;
+    }
+    runBreathPhase(next);
+  }, dur * 1000);
+}
+
+// ===== PATH =====
+function calcStreak() {
+  if (!sessions.length) return 0;
+  const dates = new Set(sessions.map(s => new Date(s.date).toDateString()));
+  let streak = 0;
+  const check = new Date(); check.setHours(0,0,0,0);
+  while (dates.has(check.toDateString())) {
+    streak++;
+    check.setDate(check.getDate() - 1);
+  }
+  return streak;
+}
+
+function renderTodayStats() {
+  document.getElementById('tStreak').textContent = calcStreak();
+  document.getElementById('tSessions').textContent = sessions.length;
+  document.getElementById('tMinutes').textContent = sessions.reduce((a,s) => a + (s.minutes||0), 0);
+}
+
+function renderPath() {
+  document.getElementById('statStreak').textContent = calcStreak();
+  document.getElementById('statTotal').textContent = sessions.length;
+  document.getElementById('statMinutes').textContent = sessions.reduce((a,s) => a + (s.minutes||0), 0);
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  ['вс','пн','вт','ср','чт','пт','сб'].forEach(l => {
+    const el = document.createElement('div');
+    el.className = 'cal-day-label';
+    el.textContent = l;
+    grid.appendChild(el);
+  });
+
+  const today = new Date(); today.setHours(0,0,0,0);
+  const practiced = new Set(sessions.map(s => new Date(s.date).toDateString()));
+  const start = new Date(today);
+  start.setDate(start.getDate() - 27);
+  start.setDate(start.getDate() - start.getDay());
+
+  for (let i = 0; i < 35; i++) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    el.textContent = d.getDate();
+    if (d.toDateString() === today.toDateString()) el.classList.add('today');
+    if (practiced.has(d.toDateString())) el.classList.add('practiced');
+    if (d > today) el.style.opacity = '0.25';
+    grid.appendChild(el);
+  }
+
+  const list = document.getElementById('historyList');
+  if (!sessions.length) {
+    list.innerHTML = '<div class="glass-card empty-state">практика ещё не начата<br>начните первую сессию</div>';
+    return;
+  }
+  list.innerHTML = '';
+  sessions.slice(0, 15).forEach(s => {
+    const d = new Date(s.date);
+    const item = document.createElement('div');
+    item.className = 'glass-card history-item';
+    item.innerHTML = `
+      <div>
+        <div class="history-date">${d.toLocaleDateString('ru', {day:'numeric', month:'long', weekday:'short'})}</div>
+        <div class="history-type">${s.type}</div>
+      </div>
+      <div class="history-dur">${s.minutes} мин</div>`;
+    list.appendChild(item);
+  });
+}
+
+loadSessions(() => {
+  updateTimerDisplay();
+  updateRing(0);
+  renderTodayStats();
+});
 </script>
 </body>
 </html>
