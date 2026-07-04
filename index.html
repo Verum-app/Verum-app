@@ -978,7 +978,7 @@
       <div class="today-title">Возвращение<br>к <em>себе настоящей</em></div>
       <div class="today-sub">Практика дня — 12 минут присутствия. Тело дышит, ум затихает, остаётесь вы.</div>
       <div class="practice-row">
-        <div class="play-orb" onclick="haptic('light')">▶</div>
+        <div class="play-orb" onclick="haptic('light')"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="margin-left:3px"><path d="M7.5 5.2c0-.9 1-1.5 1.8-1L19 11a1.2 1.2 0 0 1 0 2L9.3 19.8c-.8.5-1.8-.1-1.8-1V5.2Z"/></svg></div>
         <div class="practice-meta">
           <div class="p-name" id="dailyName"></div>
           <div class="p-dur" id="dailyDur"></div>
@@ -1065,10 +1065,10 @@
       </div>
 
       <div class="duration-select" id="durationSelect">
-        <button class="dur-btn" data-mins="5">5 мин</button>
         <button class="dur-btn active" data-mins="10">10 мин</button>
         <button class="dur-btn" data-mins="20">20 мин</button>
         <button class="dur-btn" data-mins="30">30 мин</button>
+        <button class="dur-btn" data-mins="40">40 мин</button>
       </div>
 
       <div class="pattern-row" id="patternRow" style="display:none">
@@ -1082,10 +1082,8 @@
         <button class="dur-btn active" data-sound="none">Тишина</button>
         <button class="dur-btn" data-sound="ocean">Океан</button>
         <button class="dur-btn" data-sound="rain">Дождь</button>
+        <button class="dur-btn" data-sound="wind">Ветер</button>
         <button class="dur-btn" data-sound="om">Ом</button>
-        <button class="dur-btn" data-sound="bowls">Чаши</button>
-        <button class="dur-btn" data-sound="hz432">Гармония · 432</button>
-        <button class="dur-btn" data-sound="hz963">Источник · 963</button>
       </div>
 
       <div class="ring-stage">
@@ -1109,7 +1107,7 @@
 
       <div class="timer-controls">
         <button class="ctrl-glass" id="resetBtn">↺</button>
-        <button class="play-glass" id="playBtn">▶</button>
+        <button class="play-glass" id="playBtn"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="margin-left:3px"><path d="M7.5 5.2c0-.9 1-1.5 1.8-1L19 11a1.2 1.2 0 0 1 0 2L9.3 19.8c-.8.5-1.8-.1-1.8-1V5.2Z"/></svg></button>
         <button class="ctrl-glass" id="doneBtn">✓</button>
       </div>
 
@@ -1117,7 +1115,7 @@
     </div>
   </div>
 
-  <!-- ===== PROGRAMS ===== -->
+  <!-- ===== PROGRAMS: скрыто для MVP, вернуть — убрать комментарий и вернуть пункт в док =====
   <div class="screen" id="screen-programs">
     <div class="prog-intro">Когда практика становится фундаментом —<br>приходит время строить на нём жизнь</div>
 
@@ -1151,6 +1149,7 @@
       </div>
     </div>
   </div>
+  ===== конец скрытого раздела Программы ===== -->
 
   <!-- ===== PATH ===== -->
   <div class="screen" id="screen-path">
@@ -1189,9 +1188,6 @@
   <div class="dock-item" data-screen="timer" onclick="nav('timer')">
     <div class="d-icon">◌</div><div class="d-label">Таймер</div>
   </div>
-  <div class="dock-item" data-screen="programs" onclick="nav('programs')">
-    <div class="d-icon">◈</div><div class="d-label">Программы</div>
-  </div>
   <div class="dock-item" data-screen="path" onclick="nav('path')">
     <div class="d-icon">✧</div><div class="d-label">Путь</div>
   </div>
@@ -1224,6 +1220,9 @@ if (tg) {
   if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
   cloudAvailable = !!(tg.CloudStorage && tg.isVersionAtLeast && tg.isVersionAtLeast('6.9'));
 }
+
+const ICON_PLAY = '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="margin-left:3px"><path d="M7.5 5.2c0-.9 1-1.5 1.8-1L19 11a1.2 1.2 0 0 1 0 2L9.3 19.8c-.8.5-1.8-.1-1.8-1V5.2Z"/></svg>';
+const ICON_PAUSE = '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="6.4" y="4.8" width="3.8" height="14.4" rx="1.4"/><rect x="13.8" y="4.8" width="3.8" height="14.4" rx="1.4"/></svg>';
 
 function haptic(type) {
   if (tg?.HapticFeedback) {
@@ -1403,7 +1402,7 @@ function renderMeds() {
       card.className = 'glass-card med-card';
       card.onclick = () => haptic('light');
       card.innerHTML = `
-        <div class="med-icon">${m.free ? '▶' : '✦'}</div>
+        <div class="med-icon">${m.free ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="margin-left:2px"><path d="M7.5 5.2c0-.9 1-1.5 1.8-1L19 11a1.2 1.2 0 0 1 0 2L9.3 19.8c-.8.5-1.8-.1-1.8-1V5.2Z"/></svg>` : '✦'}</div>
         <div class="med-body">
           <div class="med-name">${m.name}</div>
           <div class="med-tags">
@@ -1493,67 +1492,53 @@ function startSound(type) {
   }
 
   if (type === 'om') {
+    // мягкий дрон: пониженные гармоники + фильтр, без резкости
+    const filt = audioCtx.createBiquadFilter();
+    filt.type = 'lowpass';
+    filt.frequency.value = 500;
+    filt.connect(master);
     [108, 216, 324].forEach((f, i) => {
       const osc = audioCtx.createOscillator();
       const g = audioCtx.createGain();
       osc.type = 'sine';
       osc.frequency.value = f;
-      g.gain.value = [0.5, 0.2, 0.08][i];
+      g.gain.value = [0.42, 0.14, 0.04][i];
       osc.connect(g);
-      g.connect(master);
+      g.connect(filt);
       osc.start();
       soundNodes.push(osc, g);
     });
-  }
-
-  if (type === 'hz432' || type === 'hz963') {
-    const f = type === 'hz432' ? 432 : 963;
-    const osc = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    osc.type = 'sine';
-    osc.frequency.value = f;
-    g.gain.value = type === 'hz432' ? 0.4 : 0.16;
-    osc.connect(g);
-    g.connect(master);
-    osc.start();
-    soundNodes.push(osc, g);
-    // мягкое живое мерцание громкости
+    // медленное живое дыхание громкости
     const lfo = audioCtx.createOscillator();
     const lg = audioCtx.createGain();
-    lfo.frequency.value = 0.12;
-    lg.gain.value = 0.04;
+    lfo.frequency.value = 0.08;
+    lg.gain.value = 0.03;
     lfo.connect(lg);
     lg.connect(master.gain);
     lfo.start();
-    soundNodes.push(lfo, lg);
-    // тёплая нижняя октава для 432
-    if (f === 432) {
-      const o2 = audioCtx.createOscillator();
-      const g2 = audioCtx.createGain();
-      o2.type = 'sine';
-      o2.frequency.value = 216;
-      g2.gain.value = 0.18;
-      o2.connect(g2);
-      g2.connect(master);
-      o2.start();
-      soundNodes.push(o2, g2);
-    }
+    soundNodes.push(lfo, lg, filt);
   }
 
-  if (type === 'bowls') {
-    [[220, 220.6], [329.6, 330.1]].forEach((pair, pi) => {
-      pair.forEach(f => {
-        const osc = audioCtx.createOscillator();
-        const g = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = f;
-        g.gain.value = pi === 0 ? 0.22 : 0.09;
-        osc.connect(g);
-        g.connect(master);
-        osc.start();
-        soundNodes.push(osc, g);
-      });
-    });
+  if (type === 'wind') {
+    const src = audioCtx.createBufferSource();
+    src.buffer = makeNoiseBuffer();
+    src.loop = true;
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 320;
+    filter.Q.value = 0.4;
+    // ветер «дышит» — медленная модуляция частоты фильтра
+    const lfo = audioCtx.createOscillator();
+    const lfoGain = audioCtx.createGain();
+    lfo.frequency.value = 0.06;
+    lfoGain.gain.value = 140;
+    lfo.connect(lfoGain);
+    lfoGain.connect(filter.frequency);
+    lfo.start();
+    src.connect(filter);
+    filter.connect(master);
+    src.start();
+    soundNodes.push(src, filter, lfo, lfoGain);
   }
 }
 
@@ -1698,7 +1683,7 @@ let timerEndAt = null;
 function startTimer() {
   timerRunning = true;
   timerEndAt = Date.now() + timerRemaining * 1000;
-  document.getElementById('playBtn').textContent = '⏸';
+  document.getElementById('playBtn').innerHTML = ICON_PAUSE;
   document.getElementById('sessionNote').textContent = 'дышите... вы здесь';
   startSound(currentSound);
   const sphere = document.getElementById('glassSphere');
@@ -1719,7 +1704,7 @@ function pauseTimer() {
   clearInterval(timerInterval);
   stopSound();
   releaseWake();
-  document.getElementById('playBtn').textContent = '▶';
+  document.getElementById('playBtn').innerHTML = ICON_PLAY;
   document.getElementById('sessionNote').textContent = 'пауза — вернитесь когда готовы';
 }
 
@@ -1755,7 +1740,7 @@ document.getElementById('completionBtn').addEventListener('click', () => {
 function startBreath() {
   breathRunning = true;
   breathCycles = 0;
-  document.getElementById('playBtn').textContent = '⏸';
+  document.getElementById('playBtn').innerHTML = ICON_PAUSE;
   document.getElementById('timerLabel').textContent = 'циклов: 0';
   document.getElementById('sessionNote').textContent = 'следуйте за сферой';
   startSound(currentSound);
@@ -1768,7 +1753,7 @@ function stopBreath(save) {
   clearTimeout(breathTimeout);
   stopSound();
   releaseWake();
-  document.getElementById('playBtn').textContent = '▶';
+  document.getElementById('playBtn').innerHTML = ICON_PLAY;
   document.getElementById('phaseLabel').textContent = '';
   document.getElementById('timerDisplay').textContent = '—';
   document.getElementById('sessionNote').textContent = 'выберите технику и начните';
