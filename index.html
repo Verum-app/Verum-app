@@ -856,6 +856,124 @@
     line-height: 2;
   }
 
+
+  /* ===== AUDIO PLAYER ===== */
+  .player {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(92px + env(safe-area-inset-bottom));
+    width: calc(100% - 32px);
+    max-width: 448px;
+    padding: 14px 18px 12px;
+    border-radius: 24px;
+    background: rgba(20, 22, 42, 0.78);
+    backdrop-filter: blur(32px) saturate(1.4);
+    -webkit-backdrop-filter: blur(32px) saturate(1.4);
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 16px 48px rgba(0,0,5,0.55), inset 0 1px 1px rgba(255,255,255,0.1);
+    display: none;
+    z-index: 110;
+  }
+
+  .player.show { display: block; animation: rise 0.4s ease; }
+
+  .player-top { display: flex; align-items: center; gap: 12px; }
+
+  .player-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(201,174,125,0.4), rgba(176,146,95,0.2) 70%);
+    border: 1px solid rgba(201,174,125,0.4);
+    color: #f0e6d2;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .player-btn:active { transform: scale(0.92); }
+
+  .player-info { flex: 1; min-width: 0; }
+
+  .player-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .player-level {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    color: var(--faint);
+    margin-top: 2px;
+    text-transform: uppercase;
+  }
+
+  .player-close {
+    color: var(--faint);
+    font-size: 15px;
+    padding: 8px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .player-progress {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 3px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.12);
+    margin-top: 13px;
+    cursor: pointer;
+  }
+
+  .player-progress::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 10px rgba(201,174,125,0.5);
+  }
+
+  .player-time {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+    margin-top: 6px;
+  }
+
+  .toast {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(160px + env(safe-area-inset-bottom));
+    padding: 12px 24px;
+    border-radius: 40px;
+    background: rgba(20, 22, 42, 0.85);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255,255,255,0.14);
+    box-shadow: 0 12px 36px rgba(0,0,5,0.5);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--soft-ink);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+    z-index: 130;
+    max-width: 85%;
+    text-align: center;
+  }
+
+  .toast.show { opacity: 1; }
+
   /* ===== DOCK ===== */
   .dock {
     position: fixed;
@@ -978,7 +1096,7 @@
       <div class="today-title">Возвращение<br>к <em>себе настоящей</em></div>
       <div class="today-sub">Практика дня — 12 минут присутствия. Тело дышит, ум затихает, остаётесь вы.</div>
       <div class="practice-row">
-        <div class="play-orb" onclick="haptic('light')"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="margin-left:3px"><path d="M7.5 5.2c0-.9 1-1.5 1.8-1L19 11a1.2 1.2 0 0 1 0 2L9.3 19.8c-.8.5-1.8-.1-1.8-1V5.2Z"/></svg></div>
+        <div class="play-orb" onclick="playDaily()"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="margin-left:3px"><path d="M7.5 5.2c0-.9 1-1.5 1.8-1L19 11a1.2 1.2 0 0 1 0 2L9.3 19.8c-.8.5-1.8-.1-1.8-1V5.2Z"/></svg></div>
         <div class="practice-meta">
           <div class="p-name" id="dailyName"></div>
           <div class="p-dur" id="dailyDur"></div>
@@ -1052,7 +1170,7 @@
   <!-- ===== LIBRARY ===== -->
   <div class="screen" id="screen-library">
     <div class="cat-scroll" id="catScroll"></div>
-    <div class="lib-note">каждая практика отмечена уровнем метода: I Тело · II Психика · III Мета‑Я</div>
+    <div class="lib-note">выберите, что откликается сегодня</div>
     <div class="med-list" id="medList"></div>
   </div>
 
@@ -1082,7 +1200,6 @@
         <button class="dur-btn active" data-sound="none">Тишина</button>
         <button class="dur-btn" data-sound="ocean">Океан</button>
         <button class="dur-btn" data-sound="rain">Дождь</button>
-        <button class="dur-btn" data-sound="wind">Ветер</button>
         <button class="dur-btn" data-sound="om">Ом</button>
       </div>
 
@@ -1192,6 +1309,24 @@
     <div class="d-icon">✧</div><div class="d-label">Путь</div>
   </div>
 </nav>
+
+<div class="player" id="player">
+  <div class="player-top">
+    <button class="player-btn" id="playerBtn"></button>
+    <div class="player-info">
+      <div class="player-title" id="playerTitle"></div>
+      <div class="player-level" id="playerLevel"></div>
+    </div>
+    <div class="player-close" id="playerClose">✕</div>
+  </div>
+  <input type="range" class="player-progress" id="playerProgress" min="0" max="100" value="0">
+  <div class="player-time">
+    <span id="playerCur">0:00</span>
+    <span id="playerDur">–:––</span>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <div class="completion" id="wakeModal">
   <div class="completion-orb">☼</div>
@@ -1353,7 +1488,11 @@ function nav(name) {
 // ===== LIBRARY: категории + уровни метода =====
 const categories = ['Все', 'Тревожность', 'Самоценность', 'Деньги', 'Отношения', 'Здоровье', 'Кризис'];
 
+// АДРЕС ТВОЕГО WORKER — замени после создания в Cloudflare:
+const WORKER_URL = 'https://pub-d8547d51582a4cdc8864dde2b5065916.r2.dev';
+
 const meditations = [
+  { name: 'Соединение с Высшим Я', desc: 'Самоценность и изобилие из состояния творца', dur: '18 мин', level: 'III · Мета‑Я', cat: 'Самоценность', free: true, file: 'Higherself1.m4a' },
   { name: 'Дыхание рассвета', desc: 'Мягкое пробуждение тела', dur: '12 мин', level: 'I · Тело', cat: 'Здоровье', free: true },
   { name: 'Растворение тревоги', desc: 'Практика для острых состояний', dur: '14 мин', level: 'II · Психика', cat: 'Тревожность', free: false },
   { name: 'Заземление', desc: 'Возвращение опоры и устойчивости', dur: '10 мин', level: 'I · Тело', cat: 'Тревожность', free: false },
@@ -1376,7 +1515,7 @@ const meditations = [
 const daily = meditations[dayIndex % meditations.length];
 document.getElementById('dailyName').textContent = daily.name;
 document.getElementById('dailyDur').textContent =
-  daily.dur.toUpperCase() + ' · УРОВЕНЬ ' + daily.level.toUpperCase();
+  daily.dur.toUpperCase() + ' · ' + daily.cat.toUpperCase();
 
 let activeCat = 'Все';
 
@@ -1400,13 +1539,17 @@ function renderMeds() {
     .forEach(m => {
       const card = document.createElement('div');
       card.className = 'glass-card med-card';
-      card.onclick = () => haptic('light');
+      card.onclick = () => {
+      haptic('light');
+      if (m.file) playMeditation(m);
+      else if (m.free) showToast('Эта практика скоро появится ✨');
+      else showToast('Доступно по подписке — совсем скоро ✨');
+    };
       card.innerHTML = `
         <div class="med-icon">${m.free ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="margin-left:2px"><path d="M7.5 5.2c0-.9 1-1.5 1.8-1L19 11a1.2 1.2 0 0 1 0 2L9.3 19.8c-.8.5-1.8-.1-1.8-1V5.2Z"/></svg>` : '✦'}</div>
         <div class="med-body">
           <div class="med-name">${m.name}</div>
           <div class="med-tags">
-            <span class="level-badge">${m.level}</span>
             <span class="med-desc">${m.desc}</span>
           </div>
         </div>
@@ -1519,27 +1662,6 @@ function startSound(type) {
     soundNodes.push(lfo, lg, filt);
   }
 
-  if (type === 'wind') {
-    const src = audioCtx.createBufferSource();
-    src.buffer = makeNoiseBuffer();
-    src.loop = true;
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 320;
-    filter.Q.value = 0.4;
-    // ветер «дышит» — медленная модуляция частоты фильтра
-    const lfo = audioCtx.createOscillator();
-    const lfoGain = audioCtx.createGain();
-    lfo.frequency.value = 0.06;
-    lfoGain.gain.value = 140;
-    lfo.connect(lfoGain);
-    lfoGain.connect(filter.frequency);
-    lfo.start();
-    src.connect(filter);
-    filter.connect(master);
-    src.start();
-    soundNodes.push(src, filter, lfo, lfoGain);
-  }
 }
 
 function stopSound() {
@@ -1885,6 +2007,99 @@ function renderPath() {
       <div class="history-dur">${s.minutes} мин</div>`;
     list.appendChild(item);
   });
+}
+
+
+// ===== АУДИОПЛЕЕР МЕДИТАЦИЙ =====
+const audio = new Audio();
+audio.preload = 'none';
+let currentMed = null;
+let medSaved = false;
+
+function fmt(t) {
+  if (!isFinite(t)) return '–:––';
+  const m = Math.floor(t / 60), sec = Math.floor(t % 60);
+  return m + ':' + String(sec).padStart(2, '0');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+function playMeditation(m) {
+  currentMed = m;
+  medSaved = false;
+  const init = tg ? encodeURIComponent(tg.initData || '') : '';
+  // поддержка двух режимов: Worker (/audio/...) и временный публичный r2.dev (прямой путь)
+  audio.src = WORKER_URL.includes('r2.dev')
+    ? WORKER_URL + '/' + encodeURIComponent(m.file)
+    : WORKER_URL + '/audio/' + encodeURIComponent(m.file) + '?init=' + init;
+  document.getElementById('playerTitle').textContent = m.name;
+  document.getElementById('playerLevel').textContent = m.cat + ' · ' + m.dur;
+  document.getElementById('playerBtn').innerHTML = ICON_PAUSE;
+  document.getElementById('player').classList.add('show');
+  askWakeThen(() => {
+    audio.play().catch(() => showToast('Не удалось начать — проверьте адрес Worker в коде'));
+  });
+}
+
+function playDaily() {
+  haptic('light');
+  if (daily.file) playMeditation(daily);
+  else showToast('Эта практика скоро появится ✨');
+}
+
+document.getElementById('playerBtn').addEventListener('click', () => {
+  haptic('light');
+  if (audio.paused) { audio.play(); requestWake(); document.getElementById('playerBtn').innerHTML = ICON_PAUSE; }
+  else { audio.pause(); releaseWake(); document.getElementById('playerBtn').innerHTML = ICON_PLAY; }
+});
+
+document.getElementById('playerClose').addEventListener('click', () => {
+  haptic('light');
+  saveMedSession();
+  audio.pause();
+  audio.src = '';
+  releaseWake();
+  document.getElementById('player').classList.remove('show');
+});
+
+audio.addEventListener('timeupdate', () => {
+  if (isFinite(audio.duration) && audio.duration > 0) {
+    document.getElementById('playerProgress').value = (audio.currentTime / audio.duration) * 100;
+    document.getElementById('playerCur').textContent = fmt(audio.currentTime);
+    document.getElementById('playerDur').textContent = fmt(audio.duration);
+  }
+});
+
+document.getElementById('playerProgress').addEventListener('input', e => {
+  if (isFinite(audio.duration)) audio.currentTime = (e.target.value / 100) * audio.duration;
+});
+
+audio.addEventListener('ended', () => {
+  releaseWake();
+  document.getElementById('playerBtn').innerHTML = ICON_PLAY;
+  saveMedSession(true);
+  document.getElementById('completionMsg').innerHTML =
+    'Практика «' + (currentMed ? currentMed.name : '') + '» завершена.<br>Носите это состояние с собой.';
+  document.getElementById('completion').classList.add('show');
+});
+
+function saveMedSession(full) {
+  // записываем сессию, если прослушано больше 3 минут
+  if (!currentMed || medSaved) return;
+  const mins = Math.round((full ? audio.duration : audio.currentTime) / 60);
+  if (mins >= 3) {
+    medSaved = true;
+    sessions.unshift({ date: new Date().toISOString(), type: currentMed.name, minutes: mins });
+    saveSessions();
+    renderTodayStats();
+    haptic('success');
+  }
 }
 
 loadSessions(() => {
