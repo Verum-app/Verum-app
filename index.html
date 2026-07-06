@@ -28,10 +28,20 @@
     font-family: 'Manrope', sans-serif;
     font-weight: 300;
     color: var(--ink);
-    min-height: 100vh;
-    overflow-x: hidden;
-    overscroll-behavior: none;
+    height: 100%;
+    overflow: hidden;
     background: var(--abyss);
+  }
+
+  /* Android Telegram: скролл живёт во внутреннем контейнере,
+     чтобы жест не перехватывался самим Telegram */
+  .scroll-root {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    overscroll-behavior: contain;
   }
 
   /* ===== DEEP BACKDROP with volume ===== */
@@ -441,7 +451,7 @@
     transition: max-height 0.6s ease;
   }
 
-  .expanded .philosophy-text { max-height: 900px; }
+  .expanded .philosophy-text { max-height: 3000px; }
 
   .manifesto {
     margin-top: 18px;
@@ -863,6 +873,228 @@
 
 
 
+
+  /* ===== PAYWALL ===== */
+  .paywall {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 160;
+    background: rgba(10, 12, 24, 0.92);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: calc(28px + env(safe-area-inset-top)) 22px calc(40px + env(safe-area-inset-bottom));
+  }
+
+  .paywall.show { display: block; animation: rise 0.4s ease; }
+
+  .pw-inner { max-width: 440px; margin: 0 auto; text-align: center; }
+
+  .pw-close {
+    position: absolute;
+    top: calc(18px + env(safe-area-inset-top));
+    right: 20px;
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: var(--soft-ink);
+    font-size: 15px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+  }
+
+  .pw-eyebrow {
+    font-size: 9px;
+    letter-spacing: 0.32em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin: 26px 0 14px;
+  }
+
+  .pw-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.25;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .pw-title em { font-style: italic; color: var(--gold); }
+
+  .pw-sub {
+    font-size: 12.5px;
+    line-height: 1.75;
+    color: var(--soft-ink);
+    margin-bottom: 24px;
+  }
+
+  .pw-list {
+    text-align: left;
+    margin: 0 auto 26px;
+    max-width: 330px;
+  }
+
+  .pw-item {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--soft-ink);
+    margin-bottom: 10px;
+  }
+
+  .pw-item::before { content: '✦'; color: var(--gold); flex-shrink: 0; font-size: 11px; }
+
+  .plan-card {
+    padding: 20px 22px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.3s ease;
+    text-align: left;
+  }
+
+  .plan-card:active { transform: scale(0.98); }
+  .plan-card.best { border-color: rgba(201,174,125,0.45); }
+
+  .plan-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 19px;
+    color: var(--ink);
+  }
+
+  .plan-note { font-size: 10.5px; color: var(--faint); margin-top: 4px; letter-spacing: 0.06em; }
+
+  .plan-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    color: var(--gold);
+    white-space: nowrap;
+    text-shadow: 0 0 18px rgba(201,174,125,0.3);
+  }
+
+  .plan-per { font-size: 10px; color: var(--faint); letter-spacing: 0.08em; }
+
+  .pw-founders {
+    margin: 18px auto 6px;
+    padding: 14px 18px;
+    max-width: 360px;
+    border-radius: 18px;
+    border: 1px dashed rgba(201,174,125,0.4);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--soft-ink);
+  }
+
+  .pw-founders b { color: var(--gold); font-weight: 400; }
+
+  .pw-fine {
+    font-size: 10px;
+    line-height: 1.8;
+    color: var(--faint);
+    margin-top: 18px;
+  }
+
+  /* лист выбора способа оплаты */
+  .paysheet {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 170;
+    background: rgba(8, 10, 20, 0.7);
+    backdrop-filter: blur(8px);
+  }
+
+  .paysheet.show { display: block; }
+
+  .paysheet-card {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    width: calc(100% - 32px);
+    max-width: 440px;
+    padding: 26px 24px;
+    border-radius: 28px;
+    background: rgba(22, 24, 44, 0.92);
+    backdrop-filter: blur(32px);
+    border: 1px solid rgba(255,255,255,0.16);
+    box-shadow: 0 20px 60px rgba(0,0,5,0.6);
+    text-align: center;
+    animation: rise 0.35s ease;
+  }
+
+  .ps-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+
+  .ps-sub { font-size: 11px; color: var(--faint); margin-bottom: 20px; letter-spacing: 0.06em; }
+
+  .ps-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 50px;
+    border: 1px solid rgba(201,174,125,0.45);
+    background: linear-gradient(135deg, rgba(201,174,125,0.3), rgba(176,146,95,0.16));
+    color: var(--gold);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+  }
+
+  .ps-btn.disabled {
+    border-color: rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.04);
+    color: var(--faint);
+    cursor: default;
+  }
+
+  .ps-cancel {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--faint);
+    cursor: pointer;
+    padding: 8px;
+  }
+
+  /* CTA на главном экране */
+  .unlock-cta {
+    width: 100%;
+    padding: 18px;
+    margin-bottom: 14px;
+    border-radius: 50px;
+    border: 1px solid rgba(220,195,150,0.75);
+    background: linear-gradient(135deg, rgba(201,174,125,0.55), rgba(176,146,95,0.38));
+    color: #f5ecd9;
+    text-shadow: 0 1px 3px rgba(90,70,35,0.4);
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 13.5px;
+    letter-spacing: 0.16em;
+    cursor: pointer;
+    box-shadow: 0 10px 34px rgba(201,174,125,0.28), inset 0 1px 2px rgba(255,255,255,0.35);
+    animation: ctaGlow 3.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes ctaGlow {
+    from { box-shadow: 0 10px 34px rgba(201,174,125,0.22), inset 0 1px 2px rgba(255,255,255,0.35); }
+    to { box-shadow: 0 10px 44px rgba(201,174,125,0.42), inset 0 1px 2px rgba(255,255,255,0.35); }
+  }
+
   /* ===== FULLSCREEN PLAYER ===== */
   .fullplayer {
     display: none;
@@ -1206,6 +1438,7 @@
 <div class="stars2"></div>
 <div class="vignette"></div>
 
+<div class="scroll-root" id="scrollRoot">
 <div class="app">
   <header>
     <div class="wordmark"><div class="wm-text">VERUM</div><div class="tagline"><span>и</span><span>с</span><span>т</span><span>и</span><span>н</span><span>а</span><span class="tg-gap"></span><span>в</span><span>н</span><span>у</span><span>т</span><span>р</span><span>и</span></div></div>
@@ -1255,6 +1488,8 @@
         <div class="streak-label">минут</div>
       </div>
     </div>
+
+    <button class="unlock-cta" id="unlockCta" onclick="openPaywall()">✨ Открыть все практики</button>
 
     <!-- 7-day program, expandable -->
     <div class="glass-card program-banner" id="programCard">
@@ -1430,6 +1665,7 @@
     <div class="history-list" id="historyList"></div>
   </div>
 </div>
+</div>
 
 <nav class="dock">
   <div class="dock-item active" data-screen="today" onclick="nav('today')">
@@ -1477,6 +1713,52 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="paywall" id="paywall">
+  <div class="pw-close" onclick="closePaywall()">✕</div>
+  <div class="pw-inner">
+    <div class="pw-eyebrow">Подписка VERUM</div>
+    <div class="pw-title">Всё пространство —<br><em>открыто для тебя</em></div>
+    <div class="pw-sub">Это не просто набор медитаций, а путь: из усталости и чужих сценариев — к управлению своей реальностью через состояние Творца.</div>
+
+    <div class="pw-list">
+      <div class="pw-item">Все медитации библиотеки</div>
+      <div class="pw-item">Квантовые практики соединения с Высшим Я и перехода на новую ветку вероятностей</div>
+      <div class="pw-item">Дыхательные практики, таймер тишины и твой путь в цифрах</div>
+      <div class="pw-item">Каждый месяц — новая медитация</div>
+    </div>
+
+    <div class="glass-card plan-card" onclick="choosePlan('month')">
+      <div>
+        <div class="plan-name">Подписка — месяц</div>
+        <div class="plan-note">автопродление · отмена в любой момент</div>
+      </div>
+      <div><span class="plan-price">2 900 ₽</span><div class="plan-per">в месяц</div></div>
+    </div>
+
+    <div class="glass-card plan-card best" onclick="choosePlan('year')">
+      <div>
+        <div class="plan-name">Подписка — год</div>
+        <div class="plan-note">два месяца в подарок</div>
+      </div>
+      <div><span class="plan-price">24 900 ₽</span><div class="plan-per">в год</div></div>
+    </div>
+
+    <div class="pw-founders">🌙 Для <b>первых 20 участниц</b> — цена основательниц: <b>1 900 ₽/мес</b> или <b>19 900 ₽/год</b>. Фиксируется на первые 12 месяцев. Выбор тарифа — на странице оплаты.</div>
+
+    <div class="pw-fine">Оплата защищена · чек на почту · подписка продлевается автоматически, отключается в один клик, доступ сохраняется до конца оплаченного периода. Продукт 18+, не является медицинской услугой. Оформляя подписку, ты принимаешь условия оферты.</div>
+  </div>
+</div>
+
+<div class="paysheet" id="paysheet" onclick="if(event.target===this)closePaysheet()">
+  <div class="paysheet-card">
+    <div class="ps-title" id="psTitle">Оплата подписки</div>
+    <div class="ps-sub">выбери способ оплаты</div>
+    <button class="ps-btn" onclick="payRub()">Картой РФ · в рублях</button>
+    <button class="ps-btn disabled">$ · € · крипта — скоро</button>
+    <div class="ps-cancel" onclick="closePaysheet()">отмена</div>
+  </div>
+</div>
 
 <div class="completion" id="wakeModal">
   <div class="completion-orb">☼</div>
@@ -1599,6 +1881,7 @@ document.getElementById('thoughtText').textContent = '«' + thoughts[dayIndex] +
 
 // ===== STORAGE =====
 let sessions = [];
+let subActive = false; // статус подписки — объявлен до первого использования
 
 function loadSessions(cb) {
   if (cloudAvailable) {
@@ -1643,7 +1926,7 @@ const categories = ['Все', 'Тревожность', 'Самоценност�
 const WORKER_URL = 'https://verum-audio.annverum-aaf.workers.dev';
 
 const meditations = [
-  { name: 'Соединение с Высшим Я', desc: 'Самоценность и изобилие из состояния творца', descLong: 'Практика выхода за пределы ума — туда, где ты соединяешься с энергией своего Высшего Я. Ты наполнишься светом, вспомнишь свою истинную природу и вернёшься в тело обновлённой. Из этого состояния рождаются самоценность, изобилие и поток. Слушай в наушниках, в спокойном месте, где тебя не потревожат.', dur: '18 мин', level: 'III · Мета‑Я', cat: 'Самоценность', free: true, file: 'Higherself1.m4a' },
+  { name: 'Соединение с Высшим Я', desc: 'Самоценность и изобилие из состояния творца', descLong: 'Практика выхода за пределы ума — туда, где ты соединяешься с энергией своего Высшего Я. Ты наполнишься светом, вспомнишь свою истинную природу и вернёшься в тело обновлённой. Из этого состояния рождаются самоценность, изобилие и поток. Слушай в наушниках, в спокойном месте, где тебя не потревожат.', dur: '18 мин', level: 'III · Мета‑Я', cat: 'Самоценность', free: false, file: 'Higherself1.m4a' },
   { name: 'Дыхание рассвета', desc: 'Мягкое пробуждение тела', dur: '12 мин', level: 'I · Тело', cat: 'Здоровье', free: true },
   { name: 'Растворение тревоги', desc: 'Практика для острых состояний', dur: '14 мин', level: 'II · Психика', cat: 'Тревожность', free: false },
   { name: 'Заземление', desc: 'Возвращение опоры и устойчивости', dur: '10 мин', level: 'I · Тело', cat: 'Тревожность', free: false },
@@ -1692,12 +1975,13 @@ function renderMeds() {
       card.className = 'glass-card med-card';
       card.onclick = () => {
       haptic('light');
-      if (m.file) playMeditation(m);
-      else if (m.free) showToast('Эта практика скоро появится ✨');
-      else showToast('Доступно по подписке — совсем скоро ✨');
+      const unlocked = m.free || subActive;
+      if (unlocked && m.file) playMeditation(m);
+      else if (unlocked) showToast('Эта практика скоро появится ✨');
+      else openPaywall();
     };
       card.innerHTML = `
-        <div class="med-icon">${m.free ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="margin-left:2px"><path d="M7.5 5.2c0-.9 1-1.5 1.8-1L19 11a1.2 1.2 0 0 1 0 2L9.3 19.8c-.8.5-1.8-.1-1.8-1V5.2Z"/></svg>` : '✦'}</div>
+        <div class="med-icon">${(m.free || subActive) ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="margin-left:2px"><path d="M7.5 5.2c0-.9 1-1.5 1.8-1L19 11a1.2 1.2 0 0 1 0 2L9.3 19.8c-.8.5-1.8-.1-1.8-1V5.2Z"/></svg>` : '✦'}</div>
         <div class="med-body">
           <div class="med-name">${m.name}</div>
           <div class="med-tags">
@@ -1705,7 +1989,7 @@ function renderMeds() {
           </div>
         </div>
         <div class="med-dur">${m.dur}</div>
-        ${m.free ? '' : '<div class="lock-chip">🔒</div>'}
+        ${(m.free || subActive) ? '' : '<div class="lock-chip">🔒</div>'}
       `;
       list.appendChild(card);
     });
@@ -2197,21 +2481,20 @@ function playMeditation(m) {
   document.getElementById('playerBtn').innerHTML = ICON_PAUSE;
   document.getElementById('player').classList.add('show');
   openFull();
-  askWakeThen(() => {
-    audio.play().catch(() => showToast('Не удалось начать — проверьте адрес Worker в коде'));
-  });
+  audio.play().catch(() => showToast('Не удалось начать воспроизведение'));
 }
 
 function playDaily() {
   haptic('light');
+  if (!daily.free && !subActive) { openPaywall(); return; }
   if (daily.file) playMeditation(daily);
   else showToast('Эта практика скоро появится ✨');
 }
 
 document.getElementById('playerBtn').addEventListener('click', () => {
   haptic('light');
-  if (audio.paused) { audio.play(); requestWake(); document.getElementById('playerBtn').innerHTML = ICON_PAUSE; }
-  else { audio.pause(); releaseWake(); document.getElementById('playerBtn').innerHTML = ICON_PLAY; }
+  if (audio.paused) { audio.play(); document.getElementById('playerBtn').innerHTML = ICON_PAUSE; }
+  else { audio.pause(); document.getElementById('playerBtn').innerHTML = ICON_PLAY; }
 });
 
 document.getElementById('playerClose').addEventListener('click', () => {
@@ -2288,7 +2571,7 @@ document.querySelector('#player .player-info').addEventListener('click', () => {
 
 document.getElementById('fpBtn').addEventListener('click', () => {
   haptic('light');
-  if (audio.paused) { audio.play(); requestWake(); } else { audio.pause(); releaseWake(); }
+  if (audio.paused) { audio.play(); } else { audio.pause(); }
   syncPlayIcons();
 });
 
@@ -2383,6 +2666,56 @@ function startEq() {
 function stopEq() {
   if (eqAnim) { cancelAnimationFrame(eqAnim); eqAnim = null; }
 }
+
+
+// ===== ПОДПИСКА: PAYWALL И СТАТУС =====
+// Диплинк сценария оплаты в BotHelp:
+const SUB_LINK = 'https://t.me/Annaverum_bot?start=dl-1783324642242';
+
+function openPaywall() {
+  haptic('light');
+  document.getElementById('paywall').classList.add('show');
+}
+
+function closePaywall() {
+  haptic('light');
+  document.getElementById('paywall').classList.remove('show');
+}
+
+function choosePlan(plan) {
+  haptic('light');
+  document.getElementById('psTitle').textContent =
+    plan === 'year' ? 'Год · 24 900 ₽' : 'Месяц · 2 900 ₽';
+  document.getElementById('paysheet').classList.add('show');
+}
+
+function closePaysheet() {
+  document.getElementById('paysheet').classList.remove('show');
+}
+
+function payRub() {
+  haptic('success');
+  closePaysheet();
+  if (tg) tg.openTelegramLink(SUB_LINK);
+  else window.open(SUB_LINK, '_blank');
+}
+
+// Проверка статуса подписки у Worker
+async function checkSubscription() {
+  try {
+    const init = tg ? encodeURIComponent(tg.initData || '') : '';
+    const r = await fetch(WORKER_URL + '/status?init=' + init);
+    if (!r.ok) return;
+    const data = await r.json();
+    subActive = !!data.active;
+    if (subActive) {
+      const cta = document.getElementById('unlockCta');
+      if (cta) cta.style.display = 'none';
+      renderMeds();
+    }
+  } catch (e) {}
+}
+checkSubscription();
 
 loadSessions(() => {
   updateTimerDisplay();
