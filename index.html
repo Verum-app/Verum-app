@@ -3024,8 +3024,11 @@ function closePaywall() {
   syncBack();
 }
 
+let currentPlan = 'month';
+
 function choosePlan(plan) {
   haptic('light');
+  currentPlan = plan;
   document.getElementById('psTitle').textContent =
     plan === 'year' ? 'Год · 24 900 ₽' : 'Месяц · 2 900 ₽';
   document.getElementById('paysheet').classList.add('show');
@@ -3037,15 +3040,26 @@ function closePaysheet() {
   syncBack();
 }
 
+// DIRECT_PAY = true  → оплата в один клик: платёжная страница открывается сразу
+// DIRECT_PAY = false → старый путь через чат с ботом (если Продамус требует подпись ссылок)
+const DIRECT_PAY = true;
+
 function payRub() {
   haptic('success');
+  if (DIRECT_PAY) {
+    closePaysheet();
+    const init = tg ? encodeURIComponent(tg.initData || '') : '';
+    const link = WORKER_URL + '/pay?plan=' + currentPlan + '&init=' + init;
+    if (tg && tg.openLink) tg.openLink(link);
+    else window.open(link, '_blank');
+    return;
+  }
   closePaysheet();
   closePaywall();
   showToast('Открываю оплату в чате с ботом…');
   setTimeout(() => {
     if (tg) {
       tg.openTelegramLink(SUB_LINK);
-      // закрываем приложение, чтобы человек увидел чат со ссылками оплаты
       setTimeout(() => { try { tg.close(); } catch (e) {} }, 350);
     } else {
       window.open(SUB_LINK, '_blank');
