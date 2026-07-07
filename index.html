@@ -1374,6 +1374,26 @@
     cursor: pointer;
   }
 
+  .cur-row { display: flex; gap: 10px; margin-bottom: 12px; }
+  .cur-pill {
+    flex: 1;
+    text-align: center;
+    padding: 12px 0;
+    border-radius: 50px;
+    border: 1px solid rgba(255,255,255,0.16);
+    background: rgba(255,255,255,0.05);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--soft-ink);
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .cur-pill.active {
+    border-color: rgba(201,174,125,0.55);
+    background: linear-gradient(150deg, rgba(201,174,125,0.22), rgba(201,174,125,0.08));
+    color: var(--gold);
+  }
+
   .ps-support {
     text-align: center;
     margin: 2px 0 10px;
@@ -2270,6 +2290,21 @@
   </div>
 </div>
 
+<div class="paysheet" id="lavasheet" onclick="if(event.target===this)closeLava()">
+  <div class="paysheet-card">
+    <div class="ps-title">Оплата картой $ / €</div>
+    <div class="ps-sub">введите email — на него придёт чек, а доступ откроется сам после оплаты</div>
+    <input class="claim-input" id="lavaEmail" type="email" inputmode="email" autocomplete="email" placeholder="ваш@email.com">
+    <div class="cur-row">
+      <div class="cur-pill active" id="curUSD" onclick="setCur('USD')">$ · доллары</div>
+      <div class="cur-pill" id="curEUR" onclick="setCur('EUR')">€ · евро</div>
+    </div>
+    <button class="ps-btn" id="lavaBtn" onclick="submitLavaPay()">Перейти к оплате</button>
+    <div class="ps-support" onclick="openSupport()">🤍 Служба заботы →</div>
+    <div class="ps-cancel" onclick="closeLava()">← назад</div>
+  </div>
+</div>
+
 <div class="paysheet" id="claimsheet" onclick="if(event.target===this)closeClaim()">
   <div class="paysheet-card">
     <div class="ps-title">Активация подписки</div>
@@ -2364,6 +2399,8 @@ if (tg) {
     if (!document.hidden) {
       applySafeArea(); setTimeout(applySafeArea, 350);
       if (window.showSplash) window.showSplash(800);
+      checkSubscription();
+      setTimeout(checkSubscription, 4000);
     }
   });
   try { tg.onEvent('activated', function () { if (window.__reapplySafe) window.__reapplySafe(); }); } catch (e) {}
@@ -3744,12 +3781,58 @@ const FOUNDING = true;
 const LAVA_STANDARD = 'https://app.lava.top/products/c3283244-1a6b-43f6-8e56-92e6b9aa147a/8335e4fe-67df-40a3-aefa-43ef7dc24f7d';
 const LAVA_FOUNDING = 'https://app.lava.top/products/c3283244-1a6b-43f6-8e56-92e6b9aa147a/d444a706-0a38-43f9-a3a1-d737a9d886df';
 
+// Валютная оплата: счёт создаётся через API Lava — только такие оплаты
+// шлют вебхуки, и доступ открывается автоматически (прямые ссылки не шлют)
+let lavaCurrency = 'USD';
+function setCur(c) {
+  haptic('light');
+  lavaCurrency = c;
+  document.getElementById('curUSD').classList.toggle('active', c === 'USD');
+  document.getElementById('curEUR').classList.toggle('active', c === 'EUR');
+}
+
 function payValuta() {
-  haptic('success');
-  const link = FOUNDING ? LAVA_FOUNDING : LAVA_STANDARD;
-  showToast('После оплаты вернитесь сюда и нажмите «Активировать»');
-  if (tg && tg.openLink) tg.openLink(link);
-  else window.open(link, '_blank');
+  haptic('light');
+  closePaysheet();
+  document.getElementById('lavasheet').classList.add('show');
+  syncBack();
+  setTimeout(() => { try { document.getElementById('lavaEmail').focus(); } catch (e) {} }, 250);
+}
+
+function closeLava() {
+  document.getElementById('lavasheet').classList.remove('show');
+  syncBack();
+}
+
+async function submitLavaPay() {
+  const email = (document.getElementById('lavaEmail').value || '').trim().toLowerCase();
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    showToast('Проверьте email — кажется, в нём опечатка');
+    return;
+  }
+  const btn = document.getElementById('lavaBtn');
+  btn.textContent = 'Создаю оплату…';
+  try {
+    const init = tg ? encodeURIComponent(tg.initData || '') : '';
+    const r = await fetch(WORKER_URL + '/lavapay?init=' + init, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, plan: currentPlan, currency: lavaCurrency }),
+    });
+    const data = await r.json();
+    if (data.ok && data.url) {
+      haptic('success');
+      closeLava();
+      showToast('После оплаты вернитесь сюда — доступ откроется сам ✨', false, 5000);
+      if (tg && tg.openLink) tg.openLink(data.url);
+      else window.open(data.url, '_blank');
+    } else {
+      showToast('Не получилось создать оплату — попробуйте ещё раз или напишите в службу заботы 🤍', false, 5000);
+    }
+  } catch (e) {
+    showToast('Нет связи — проверьте интернет и попробуйте снова');
+  }
+  btn.textContent = 'Перейти к оплате';
 }
 
 // Отзывы и канал
@@ -3949,6 +4032,7 @@ checkSubscription();
 function syncBack() {
   if (!tg || !tg.BackButton) return;
   const need =
+    document.getElementById('lavasheet').classList.contains('show') ||
     document.getElementById('fbsheet').classList.contains('show') ||
     document.getElementById('claimsheet').classList.contains('show') ||
     document.getElementById('paysheet').classList.contains('show') ||
@@ -3960,7 +4044,8 @@ function syncBack() {
 if (tg && tg.BackButton) {
   tg.BackButton.onClick(() => {
     haptic('light');
-    if (document.getElementById('fbsheet').classList.contains('show')) closeFeedback();
+    if (document.getElementById('lavasheet').classList.contains('show')) closeLava();
+    else if (document.getElementById('fbsheet').classList.contains('show')) closeFeedback();
     else if (document.getElementById('claimsheet').classList.contains('show')) closeClaim();
     else if (document.getElementById('paysheet').classList.contains('show')) closePaysheet();
     else if (document.getElementById('paywall').classList.contains('show')) closePaywall();
