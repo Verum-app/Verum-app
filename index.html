@@ -114,6 +114,42 @@
     pointer-events: none;
   }
 
+  /* аврора: медленно дышащие световые пятна под стеклом */
+  .aurora {
+    position: fixed;
+    inset: -25%;
+    z-index: -3;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .aurora i {
+    position: absolute;
+    display: block;
+    border-radius: 50%;
+    will-change: transform;
+  }
+  .au1 {
+    width: 95vw; height: 95vw;
+    left: -28vw; top: -10vh;
+    background: radial-gradient(circle closest-side, rgba(139,125,190,0.22), transparent 70%);
+    animation: aur1 46s ease-in-out infinite alternate;
+  }
+  .au2 {
+    width: 85vw; height: 85vw;
+    right: -32vw; top: 24vh;
+    background: radial-gradient(circle closest-side, rgba(201,174,125,0.14), transparent 70%);
+    animation: aur2 58s ease-in-out infinite alternate;
+  }
+  .au3 {
+    width: 110vw; height: 110vw;
+    left: 0vw; bottom: -46vh;
+    background: radial-gradient(circle closest-side, rgba(217,212,232,0.10), transparent 72%);
+    animation: aur3 70s ease-in-out infinite alternate;
+  }
+  @keyframes aur1 { to { transform: translate(16vw, 12vh) scale(1.14); } }
+  @keyframes aur2 { to { transform: translate(-14vw, -9vh) scale(1.18); } }
+  @keyframes aur3 { to { transform: translate(-9vw, -14vh) scale(1.08); } }
+
   .stars {
     background-image:
       radial-gradient(1px 1px at 12% 22%, rgba(255,255,255,0.6), transparent),
@@ -212,12 +248,14 @@
 
   /* ===== GLASS ===== */
   .glass-card {
-    background: linear-gradient(155deg, rgba(255,255,255,0.075), rgba(255,255,255,0.035) 55%, rgba(139,125,190,0.045));
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.055), transparent 26%),
+      linear-gradient(155deg, rgba(255,255,255,0.075), rgba(255,255,255,0.035) 55%, rgba(139,125,190,0.045));
     backdrop-filter: blur(28px) saturate(1.4);
     -webkit-backdrop-filter: blur(28px) saturate(1.4);
     border: 1px solid var(--glass-border);
     border-radius: 26px;
-    box-shadow: var(--glass-shadow), inset 0 1px 1px rgba(255,255,255,0.08);
+    box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,0.20);
     position: relative;
     overflow: hidden;
   }
@@ -266,7 +304,7 @@
   }
 
   /* ===== TODAY ===== */
-  .today-hero { padding: 30px 26px; margin-bottom: 14px; }
+  .today-hero { padding: 34px 28px; margin-bottom: 18px; }
 
   .today-date {
     font-size: 10px;
@@ -280,9 +318,9 @@
     font-family: 'Cormorant Garamond', serif;
     font-weight: 400;
     font-size: 30px;
-    line-height: 1.2;
+    line-height: 1.28;
     color: var(--ink);
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
 
   .today-title em {
@@ -325,6 +363,13 @@
     color: var(--ink);
   }
 
+  .practice-meta .p-desc {
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: var(--soft-ink);
+    margin: 3px 0 2px;
+  }
+
   .practice-meta .p-dur {
     font-size: 11px;
     letter-spacing: 0.15em;
@@ -336,8 +381,8 @@
   .thought-card {
     background: linear-gradient(150deg, rgba(139,125,190,0.20), rgba(139,125,190,0.08) 60%, rgba(217,212,232,0.05)) !important;
     border-color: rgba(217,212,232,0.45) !important;
-    padding: 24px 26px;
-    margin-bottom: 14px;
+    padding: 26px 26px;
+    margin-bottom: 18px;
     text-align: center;
     box-shadow: 0 0 28px rgba(217,212,232,0.16), 0 0 60px rgba(139,125,190,0.12), inset 0 0 24px rgba(217,212,232,0.07);
     animation: pearlBreath 6s ease-in-out infinite;
@@ -534,7 +579,7 @@
     margin-bottom: 18px;
   }
 
-  .med-list { display: flex; flex-direction: column; gap: 12px; }
+  .med-list { display: flex; flex-direction: column; gap: 16px; }
 
   .med-card {
     padding: 18px 20px;
@@ -1711,7 +1756,7 @@
     backdrop-filter: blur(32px) saturate(1.4);
     -webkit-backdrop-filter: blur(32px) saturate(1.4);
     border: 1px solid rgba(255,255,255,0.12);
-    box-shadow: 0 16px 48px rgba(0,0,5,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
+    box-shadow: 0 16px 48px rgba(0,0,5,0.5), inset 0 1px 0 rgba(255,255,255,0.2);
     z-index: 100;
   }
 
@@ -1737,9 +1782,9 @@
   }
 
   .dock-item.active {
-    background: rgba(255,255,255,0.08);
+    background: linear-gradient(150deg, rgba(201,174,125,0.26), rgba(201,174,125,0.09));
     color: var(--gold);
-    box-shadow: 0 4px 16px rgba(0,0,5,0.35), inset 0 1px 1px rgba(255,255,255,0.1);
+    box-shadow: 0 4px 16px rgba(0,0,5,0.35), inset 0 1px 0 rgba(255,255,255,0.18), 0 0 22px rgba(201,174,125,0.14);
   }
 
   /* ===== COMPLETION ===== */
@@ -1795,6 +1840,7 @@
 </div>
 
 <div class="backdrop"></div>
+<div class="aurora"><i class="au1"></i><i class="au2"></i><i class="au3"></i></div>
 <div class="stars"></div>
 <div class="stars2"></div>
 <div class="vignette"></div>
@@ -1897,11 +1943,12 @@
     <div class="glass-card today-hero">
       <div class="today-date" id="todayDate"></div>
       <div class="today-title">Реальность начинается<br><em>внутри</em></div>
-      <div class="today-sub" id="dailySub"></div>
+      <div class="today-sub">Практика дня</div>
       <div class="practice-row">
         <div class="play-orb" onclick="playDaily()"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="margin-left:3px"><path d="M7.5 5.2c0-.9 1-1.5 1.8-1L19 11a1.2 1.2 0 0 1 0 2L9.3 19.8c-.8.5-1.8-.1-1.8-1V5.2Z"/></svg></div>
         <div class="practice-meta">
           <div class="p-name" id="dailyName"></div>
+          <div class="p-desc" id="dailyDesc"></div>
           <div class="p-dur" id="dailyDur"></div>
         </div>
       </div>
@@ -2781,9 +2828,8 @@ const meditations = [
 // С 10 медитациями цикл повторяется каждые 10 дней; добавишь новые — цикл удлинится сам.
 const daily = meditations[dayIndex % meditations.length];
 document.getElementById('dailyName').textContent = daily.name;
-document.getElementById('dailySub').textContent = daily.desc;
-document.getElementById('dailyDur').textContent =
-  'ПРАКТИКА ДНЯ · ' + daily.dur.toUpperCase();
+document.getElementById('dailyDesc').textContent = daily.desc;
+document.getElementById('dailyDur').textContent = daily.dur.toUpperCase();
 
 let activeCat = 'Общие';
 
