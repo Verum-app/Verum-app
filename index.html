@@ -3813,11 +3813,10 @@ async function submitLavaPay() {
   const btn = document.getElementById('lavaBtn');
   btn.textContent = 'Создаю оплату…';
   try {
-    const init = tg ? encodeURIComponent(tg.initData || '') : '';
-    const r = await fetch(WORKER_URL + '/lavapay?init=' + init, {
+    const r = await fetch(WORKER_URL + '/lavapay', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, plan: currentPlan, currency: lavaCurrency }),
+      body: JSON.stringify({ init: (tg && tg.initData) || '', email: email, plan: currentPlan, currency: lavaCurrency }),
     });
     const data = await r.json();
     if (data.ok && data.url) {
@@ -3867,11 +3866,10 @@ async function submitFeedback() {
   const btn = document.getElementById('fbBtn');
   btn.textContent = 'Отправляю…';
   try {
-    const init = tg ? encodeURIComponent(tg.initData || '') : '';
-    const r = await fetch(WORKER_URL + '/feedback?init=' + init, {
+    const r = await fetch(WORKER_URL + '/feedback', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: text, context: fbContext }),
+      body: JSON.stringify({ init: (tg && tg.initData) || '', text: text, context: fbContext }),
     });
     const data = await r.json();
     if (data.ok) {
