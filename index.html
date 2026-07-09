@@ -330,11 +330,11 @@
   }
 
   .today-sub {
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--soft-ink);
-    margin-bottom: 24px;
-    max-width: 90%;
+    font-size: 9px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 14px;
   }
 
   .practice-row { display: flex; align-items: center; gap: 16px; }
@@ -358,21 +358,21 @@
 
   .practice-meta .p-name {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 17px;
-    font-style: italic;
+    font-size: 18px;
     color: var(--ink);
   }
 
   .practice-meta .p-desc {
-    font-size: 11.5px;
-    line-height: 1.5;
+    font-size: 12px;
+    line-height: 1.6;
     color: var(--soft-ink);
-    margin: 3px 0 2px;
+    margin: 4px 0 5px;
   }
 
   .practice-meta .p-dur {
-    font-size: 11px;
-    letter-spacing: 0.15em;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
     color: var(--faint);
     margin-top: 3px;
   }
@@ -954,7 +954,7 @@
   }
 
   .history-date { font-size: 10px; letter-spacing: 0.12em; color: var(--faint); }
-  .history-type { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 15px; color: var(--ink); margin-top: 3px; }
+  .history-type { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--ink); margin-top: 3px; }
   .history-dur { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--gold); }
 
   .empty-state {
@@ -1516,7 +1516,8 @@
     justify-content: flex-start;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    padding: calc(30px + env(safe-area-inset-top) + var(--tg-content-safe-area-inset-top, 0px)) 28px calc(34px + env(safe-area-inset-bottom));
+    overscroll-behavior: contain;
+    padding: calc(48px + env(safe-area-inset-top) + var(--tg-content-safe-area-inset-top, 0px)) 28px calc(34px + env(safe-area-inset-bottom));
     text-align: center;
     overflow-y: auto;
   }
@@ -1617,9 +1618,6 @@
   }
 
   .fp-play:active { transform: scale(0.93); }
-
-  .fullplayer > :first-child { margin-top: auto; }
-  .fullplayer > :last-child { margin-bottom: auto; }
 
   .fp-desc-wrap {
     width: 100%;
@@ -2013,7 +2011,7 @@
       <div class="potok-body">
         <div class="potok-eyebrow">Бесплатная программа</div>
         <div class="potok-title">Игра-медитация ПОТОК<br><em>Возвращение к себе</em></div>
-        <div class="potok-desc">Пять дней — пять уровней твоей жизни: тело, психика, пространство, дело и дух. Каждое утро — одна практика-игра, а на пятый день — встреча с Источником. Результат: возвращённая энергия и состояние, из которого начинаются перемены.</div>
+        <div class="potok-desc">Пять дней — пять уровней твоей жизни: тело, психика, пространство, дело жизни и связь с Высшим Я. Каждое утро — одна практика-игра, а на пятый день — встреча с Источником. Результат: возвращённая энергия и состояние, из которого начинаются перемены.</div>
         <div class="potok-rec">✦ Проходи 5 дней подряд — следующий день открывается после прослушанного.</div>
         <div id="potokDays"></div>
       </div>
@@ -3572,10 +3570,6 @@ function minimizeFull() {
 document.getElementById('fpMinimize').addEventListener('click', () => { haptic('light'); minimizeFull(); });
 
 // прокрутка «О практике» — изолируем от жестов плеера, чтобы текст не отскакивал
-document.querySelectorAll('.fp-desc').forEach(el => {
-  ['touchstart', 'touchmove'].forEach(ev =>
-    el.addEventListener(ev, e => e.stopPropagation(), { passive: true }));
-});
 
 document.querySelector('#player .player-info').addEventListener('click', () => {
   haptic('light');
@@ -3839,7 +3833,7 @@ const FOUNDING = true;
 
 // Валютная оплата через Lava.top ($ / €). Ссылки на подписки:
 // стандарт: $39/мес · $329/год; основательницы: $25/мес · $259/год (период выбирается на странице Lava)
-const APP_BUILD = 40; // метка сборки: внизу Пути, детектор кэша Telegram
+const APP_BUILD = 42; // метка сборки: внизу Пути, детектор кэша Telegram
 
 // клавиатура iOS: поле email в фокусе → шторка поднимается наверх
 document.querySelectorAll('.claim-input').forEach(inp => {
