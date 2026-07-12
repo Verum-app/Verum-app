@@ -3169,6 +3169,17 @@ function haptic(type) {
   }
 }
 
+// финал практики: тройная волна вибрации с нарастанием — язык беззвучного режима.
+// Между волнами паузы, чтобы телефон в кармане прочитался как «колокол», а не жужжание
+function hapticFinale() {
+  try {
+    if (!tg || !tg.HapticFeedback) return;
+    tg.HapticFeedback.notificationOccurred('success');
+    setTimeout(() => { try { tg.HapticFeedback.impactOccurred('heavy'); } catch (e) {} }, 450);
+    setTimeout(() => { try { tg.HapticFeedback.notificationOccurred('success'); } catch (e) {} }, 950);
+  } catch (e) {}
+}
+
 function openBot() {
   haptic('light');
   // ЗАМЕНИ на ссылку своего бота или страницу оплаты:
@@ -4282,7 +4293,7 @@ function completeTimer() {
   timerRunning = false;
   stopSound();
   releaseWake();
-  haptic('success');
+  hapticFinale();
   playCompletionChime();
   const mins = Math.max(1, Math.round((timerDuration - timerRemaining) / 60));
   sessions.unshift({ date: new Date().toISOString(), type: 'Медитация тишины', minutes: mins });
@@ -4340,7 +4351,7 @@ function stopBreath(save) {
     const mins = Math.max(1, Math.round(breathCycles * cycleSec / 60));
     sessions.unshift({ date: new Date().toISOString(), type: 'Дыхательная практика', minutes: mins });
     saveSessions();
-    haptic('success');
+    hapticFinale();
     document.getElementById('completionMsg').innerHTML =
       `${breathCycles} циклов дыхания.<br>Нервная система благодарит.`;
     document.getElementById('compFav').classList.remove('show');
@@ -5047,7 +5058,7 @@ const FOUNDING = true;
 
 // Валютная оплата через Lava.top ($ / €). Ссылки на подписки:
 // стандарт: $39/мес · $329/год; основательницы: $25/мес · $259/год (период выбирается на странице Lava)
-const APP_BUILD = 78; // внутренняя метка, в интерфейсе не показывается // метка сборки: внизу Пути, детектор кэша Telegram
+const APP_BUILD = 79; // внутренняя метка, в интерфейсе не показывается // метка сборки: внизу Пути, детектор кэша Telegram
 
 // клавиатура iOS: поле email в фокусе → шторка поднимается наверх
 document.querySelectorAll('.claim-input').forEach(inp => {
