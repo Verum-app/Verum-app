@@ -3074,6 +3074,27 @@
 const tg = window.Telegram?.WebApp;
 let cloudAvailable = false;
 
+// одноразовая предзапусковая очистка (сборка 78): история практик и дни игры
+// Аны стираются локально и в облаке Telegram — чистый лист к запуску.
+// Выполняется один раз, метка verum_wipe78. Любимые и имя не трогаем.
+(function () {
+  try {
+    const u = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user;
+    if (!u || String(u.id) !== '1047280655') return;
+    if (localStorage.getItem('verum_wipe78')) return;
+    localStorage.setItem('verum_wipe78', '1');
+    localStorage.setItem('verum_sessions', '[]');
+    localStorage.setItem('verum_potok', '{}');
+    try {
+      const cs = window.Telegram.WebApp.CloudStorage;
+      if (cs && cs.setItem) {
+        cs.setItem('verum_sessions', '[]', () => {});
+        cs.setItem('verum_potok', '{}', () => { try { location.reload(); } catch (e) {} });
+      }
+    } catch (e) {}
+  } catch (e) {}
+})();
+
 // Android: WebView слабее к живому размытию — включаем режим лёгкого стекла (CSS .droid)
 if ((tg && tg.platform === 'android') || /Android/i.test(navigator.userAgent || '')) {
   document.documentElement.classList.add('droid');
@@ -3991,7 +4012,7 @@ document.getElementById('doneBtn').addEventListener('click', () => {
 let timerEndAt = null;
 
 function startTimer() {
-  prepareChime(); // мелодия готовится заранее, пока идёт практика
+  armOrResumeTimerChime(); // дорожка тишина+колокольчик уже в полёте с этого касания
   timerRunning = true;
   timerEndAt = Date.now() + timerRemaining * 1000;
   document.getElementById('playBtn').innerHTML = ICON_PAUSE;
@@ -4021,6 +4042,7 @@ function pauseTimer() {
 }
 
 function resetTimer() {
+  premixArmed = false;
   stopChimeKeepalive();
   pauseTimer();
   timerRemaining = timerDuration;
@@ -4059,9 +4081,66 @@ function scheduleChime(ctx, dest, base) {
   });
 }
 
-let chimeAudio = null;   // якорь: беззвучный цикл держит аудиосессию всю практику
-let chimeBell = null;    // колокольчик: отдельный элемент, разблокирован в жесте, заряжен заранее
+let chimeAudio = null;   // якорь/дорожка: тишина + колокольчик одним файлом
+let chimeBell = null;    // запасной колокольчик (для сверхдлинных таймеров)
 let chimeUrl = null, chimeRendering = false, bellArmed = false;
+let premixArmed = false, premixLead = 0, premixUrl = null;
+
+// ===== ГЛАВНЫЙ ПУТЬ ЗВУКА ФИНАЛА =====
+// iOS на погашенном экране запрещает ЗАПУСКАТЬ новый звук — любой, даже
+// «разблокированным» элементом. Разрешено только ПРОДОЛЖАТЬ уже играющий.
+// Поэтому дорожка «тишина длиной в таймер + колокольчик в конце» строится
+// целиком и стартует прямо в жесте касания: в финале ничего не запускается —
+// мелодия просто наступает, как следующая минута медитации.
+function armTimerChime(seconds) {
+  try {
+    if (seconds < 3 || seconds > 45 * 60) { premixArmed = false; return false; }
+    const OAC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    if (!OAC) { premixArmed = false; return false; }
+    if (!chimeAudio) {
+      chimeAudio = new Audio();
+      chimeAudio.setAttribute('playsinline', '');
+      chimeAudio.preload = 'auto';
+    }
+    // мгновенно занять звук тишиной (в жесте), пока секунда-другая уходит на рендер
+    chimeAudio.loop = true;
+    chimeAudio.src = SILENT_LOOP;
+    const p0 = chimeAudio.play();
+    if (p0 && p0.catch) p0.catch(() => {});
+    premixArmed = true;
+    premixLead = seconds;
+    const sr = 8000; // мелодия из низких синусов — 8 кГц хватает с запасом, файл лёгкий
+    const octx = new OAC(1, sr * (seconds + 11), sr);
+    scheduleChime(octx, octx.destination, seconds);
+    octx.startRendering().then((buf) => {
+      if (!premixArmed || !chimeAudio) return; // успели сбросить
+      const u = URL.createObjectURL(new Blob([bufferToWav(buf)], { type: 'audio/wav' }));
+      const elapsed = Math.max(0, premixLead - Math.max(0, timerRemaining));
+      chimeAudio.loop = false;
+      chimeAudio.src = u;
+      chimeAudio.currentTime = elapsed;
+      const p = chimeAudio.play();
+      if (p && p.catch) p.catch(() => {});
+      if (premixUrl) { try { URL.revokeObjectURL(premixUrl); } catch (e) {} }
+      premixUrl = u;
+    }).catch(() => {});
+    return true;
+  } catch (e) { premixArmed = false; return false; }
+}
+
+function armOrResumeTimerChime() {
+  try {
+    if (premixArmed && premixUrl && chimeAudio) {
+      // возобновление после паузы: перемотка дорожки на текущее место таймера
+      chimeAudio.currentTime = Math.max(0, premixLead - Math.max(0, timerRemaining));
+      const p = chimeAudio.play();
+      if (p && p.catch) p.catch(() => {});
+      return;
+    }
+    if (!armTimerChime(timerRemaining)) prepareChime(); // запасной путь: элемент-колокольчик
+    else { try { ensureCtx(); } catch (e) {} }
+  } catch (e) {}
+}
 
 // беззвучный цикл: играет всю практику и держит аудиосессию открытой —
 // благодаря ему мелодия завершения звучит и на беззвучном режиме, и с погашенным
@@ -4146,8 +4225,16 @@ function prepareChime() {
 }
 
 function playCompletionChime() {
-  // финал: звучит заранее заряженный и разблокированный колокольчик.
-  // Якорь глушим ПОСЛЕ его старта — аудиосессия ни на миг не прерывается.
+  // главный путь: дорожка с колокольчиком УЖЕ играет — ничего запускать не нужно,
+  // просто отпускаем её дозвучать (это и есть весь секрет беззвучного режима)
+  try {
+    if (premixArmed && premixUrl && chimeAudio && !chimeAudio.paused) {
+      premixArmed = false;
+      return;
+    }
+  } catch (e) {}
+  premixArmed = false;
+  // запасные пути (если премикс не собрался): колокольчик-элемент → якорь → синтез
   try {
     if (chimeBell && chimeUrl) {
       if (chimeBell.src !== chimeUrl) { chimeBell.src = chimeUrl; }
@@ -4960,7 +5047,7 @@ const FOUNDING = true;
 
 // Валютная оплата через Lava.top ($ / €). Ссылки на подписки:
 // стандарт: $39/мес · $329/год; основательницы: $25/мес · $259/год (период выбирается на странице Lava)
-const APP_BUILD = 77; // внутренняя метка, в интерфейсе не показывается // метка сборки: внизу Пути, детектор кэша Telegram
+const APP_BUILD = 78; // внутренняя метка, в интерфейсе не показывается // метка сборки: внизу Пути, детектор кэша Telegram
 
 // клавиатура iOS: поле email в фокусе → шторка поднимается наверх
 document.querySelectorAll('.claim-input').forEach(inp => {
