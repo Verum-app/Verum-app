@@ -4126,12 +4126,27 @@ function armTimerChime(seconds) {
     octx.startRendering().then((buf) => {
       if (!premixArmed || !chimeAudio) return; // успели сбросить
       const u = URL.createObjectURL(new Blob([bufferToWav(buf)], { type: 'audio/wav' }));
-      const elapsed = Math.max(0, premixLead - Math.max(0, timerRemaining));
+      // iOS/Telegram: после смены src перемотка и play допустимы только после
+      // загрузки метаданных — иначе перемотка теряется, а play() отклоняется.
+      // При отказе тихо возвращаем якорь-тишину: сессия жива, финал прозвучит
+      // запасным колокольчиком, взведённым тем же касанием.
+      const onReady = () => {
+        try { chimeAudio.currentTime = Math.max(0, premixLead - Math.max(0, timerRemaining)); } catch (e) {}
+        const p = chimeAudio.play();
+        if (p && p.catch) p.catch(() => {
+          premixArmed = false;
+          try {
+            chimeAudio.loop = true;
+            chimeAudio.src = SILENT_LOOP;
+            const q = chimeAudio.play();
+            if (q && q.catch) q.catch(() => {});
+          } catch (e) {}
+        });
+      };
       chimeAudio.loop = false;
+      chimeAudio.addEventListener('loadedmetadata', onReady, { once: true });
       chimeAudio.src = u;
-      chimeAudio.currentTime = elapsed;
-      const p = chimeAudio.play();
-      if (p && p.catch) p.catch(() => {});
+      try { chimeAudio.load(); } catch (e) {}
       if (premixUrl) { try { URL.revokeObjectURL(premixUrl); } catch (e) {} }
       premixUrl = u;
     }).catch(() => {});
@@ -4143,13 +4158,14 @@ function armOrResumeTimerChime() {
   try {
     if (premixArmed && premixUrl && chimeAudio) {
       // возобновление после паузы: перемотка дорожки на текущее место таймера
-      chimeAudio.currentTime = Math.max(0, premixLead - Math.max(0, timerRemaining));
+      try { chimeAudio.currentTime = Math.max(0, premixLead - Math.max(0, timerRemaining)); } catch (e) {}
       const p = chimeAudio.play();
-      if (p && p.catch) p.catch(() => {});
+      if (p && p.catch) p.catch(() => { premixArmed = false; try { prepareChime(); } catch (e) {} });
       return;
     }
-    if (!armTimerChime(timerRemaining)) prepareChime(); // запасной путь: элемент-колокольчик
-    else { try { ensureCtx(); } catch (e) {} }
+    const ok = armTimerChime(timerRemaining);
+    prepareChime(); // колокольчик-страховка взводится тем же касанием ВСЕГДА
+    if (ok) { try { ensureCtx(); } catch (e) {} }
   } catch (e) {}
 }
 
@@ -5058,7 +5074,7 @@ const FOUNDING = true;
 
 // Валютная оплата через Lava.top ($ / €). Ссылки на подписки:
 // стандарт: $39/мес · $329/год; основательницы: $25/мес · $259/год (период выбирается на странице Lava)
-const APP_BUILD = 95; // внутренняя метка, в интерфейсе не показывается // метка сборки: внизу Пути, детектор кэша Telegram
+const APP_BUILD = 96; // внутренняя метка, в интерфейсе не показывается // метка сборки: внизу Пути, детектор кэша Telegram
 
 // клавиатура iOS: поле email в фокусе → шторка поднимается наверх
 document.querySelectorAll('.claim-input').forEach(inp => {
@@ -5647,7 +5663,7 @@ loadSessions(() => {
 @font-face { font-family:'Manrope'; font-style:normal; font-weight:400; font-display:swap; src:url('fonts/manrope-400.woff2') format('woff2'); }
 @font-face { font-family:'Manrope'; font-style:normal; font-weight:500; font-display:swap; src:url('fonts/manrope-500.woff2') format('woff2'); }
 
-  /* === VERUM v95 · фиксы: паywall в тон, золото тарифов, мягкая тень Пути === */
+  /* === VERUM v96 · 95-я + лечение мелодии таймера === */
   .aurora { display: none !important; }
   .backdrop { background:
       radial-gradient(ellipse 92% 46% at 50% -10%, rgba(222,236,242,0.09), transparent 62%),
@@ -5662,7 +5678,6 @@ loadSessions(() => {
     border-color: rgba(214,238,240,0.16) !important;
     box-shadow: 0 14px 44px rgba(0,4,6,0.5), inset 0 1px 0 rgba(255,255,255,0.22) !important;
   }
-  /* Путь: то же стекло, но тень мягкая и короткая + карусели воздух, чтобы её не резало */
   .pc-card {
     background: linear-gradient(180deg, rgba(38,104,114,0.24), rgba(12,44,50,0.20)) !important;
     border-color: rgba(214,238,240,0.16) !important;
@@ -5670,10 +5685,8 @@ loadSessions(() => {
   }
   .path-carousel { padding-bottom: 24px !important; margin-bottom: 6px !important; }
   .dock { background: rgba(4,19,26,0.90) !important; border-color: rgba(214,238,240,0.11) !important; }
-  /* окно оплаты: фон строго в тон приложения (без зелени) */
   .paywall { background: rgba(4,15,23,0.94) !important; }
   .droid .paywall { background: rgba(4,15,23,0.975) !important; }
-  /* тарифы = кнопки оплаты: возвращаю золотое стекло, которое перекрыл общий стиль карточек */
   .plan-card {
     border-color: rgba(242,224,182,0.4) !important;
     box-shadow: 0 12px 40px rgba(0,4,6,0.45),
