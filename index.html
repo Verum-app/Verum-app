@@ -4884,8 +4884,8 @@ function startEq() {
     const breathe = 1 + Math.sin(t * 0.7) * 0.05;
     // внешнее золотое сияние
     let g1 = ctx2.createRadialGradient(cx, cy, 40, cx, cy, 190 * breathe);
-    g1.addColorStop(0, 'rgba(236,242,242,0.0)');
-    g1.addColorStop(0.6, 'rgba(236,242,242,0.0)');
+    g1.addColorStop(0, 'rgba(232,242,242,0.08)');
+    g1.addColorStop(0.6, 'rgba(232,242,242,0.03)');
     g1.addColorStop(1, 'rgba(201,174,125,0)');
     ctx2.fillStyle = g1;
     ctx2.beginPath(); ctx2.arc(cx, cy, 190 * breathe, 0, Math.PI * 2); ctx2.fill();
@@ -5058,7 +5058,7 @@ const FOUNDING = true;
 
 // Валютная оплата через Lava.top ($ / €). Ссылки на подписки:
 // стандарт: $39/мес · $329/год; основательницы: $25/мес · $259/год (период выбирается на странице Lava)
-const APP_BUILD = 89; // внутренняя метка, в интерфейсе не показывается // метка сборки: внизу Пути, детектор кэша Telegram
+const APP_BUILD = 90; // внутренняя метка, в интерфейсе не показывается // метка сборки: внизу Пути, детектор кэша Telegram
 
 // клавиатура iOS: поле email в фокусе → шторка поднимается наверх
 document.querySelectorAll('.claim-input').forEach(inp => {
@@ -5647,17 +5647,29 @@ loadSessions(() => {
 @font-face { font-family:'Manrope'; font-style:normal; font-weight:400; font-display:swap; src:url('fonts/manrope-400.woff2') format('woff2'); }
 @font-face { font-family:'Manrope'; font-style:normal; font-weight:500; font-display:swap; src:url('fonts/manrope-500.woff2') format('woff2'); }
 
-  /* === VERUM v89 · Полночь 187: прозрачное стекло на глубокой воде === */
-  .aurora, .stars, .stars2, .vignette { display: none !important; }
-  .backdrop { background: linear-gradient(180deg, #08252a 0%, #05171a 45%, #030e11 100%) !important; }
+  /* === VERUM v90 · Полночь со светом: звёзды, лунная дорожка, виньетка, золотой волосок, бархат === */
+  .aurora { display: none !important; }              /* пятна-переливы выключены — тон не плывёт */
+  /* звёзды и виньетка остаются — они уже в холодном тоне */
+  .backdrop { background:
+      radial-gradient(ellipse 92% 46% at 50% -10%, rgba(224,238,240,0.09), transparent 62%),
+      linear-gradient(180deg, #08252a 0%, #05171a 45%, #030e11 100%) !important; }
   .backdrop::before, .backdrop::after { display: none !important; }
   html, body { background: #05171a !important; }
+  body::after { content:''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E"); opacity: 0.05; mix-blend-mode: overlay; }
+  .droid body::after, .droid .backdrop { background-image: none; }
   .glass-card {
     background: linear-gradient(180deg, rgba(38,104,114,0.24), rgba(12,44,50,0.20)) !important;
     border-color: rgba(214,238,240,0.16) !important;
     box-shadow: 0 14px 44px rgba(0,4,6,0.5), inset 0 1px 0 rgba(255,255,255,0.22) !important;
   }
   .dock { background: rgba(4,22,26,0.90) !important; border-color: rgba(214,238,240,0.11) !important; }
+  /* золотой волосок — только там, где рука: активный чип, вкладка, валюта */
+  .cat-chip.active { border: 1px solid rgba(201,174,125,0.85) !important; box-shadow: 0 0 10px rgba(201,174,125,0.18) !important; }
+  .dock-item.active { position: relative; }
+  .dock-item.active::after { content:''; position:absolute; left:50%; transform:translateX(-50%);
+      bottom: 4px; width: 22px; height: 1px; background: linear-gradient(90deg, transparent, #c9ae7d, transparent); }
+  .cur-pill.active { border: 1px solid rgba(201,174,125,0.9) !important; }
 </style>
 </body>
 </html>
