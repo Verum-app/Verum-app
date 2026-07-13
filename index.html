@@ -14,7 +14,7 @@
 /* Объявления шрифтов — в конце файла (сборка 57): сплэш появляется сразу, шрифты доезжают следом */
 
   :root {
-    --abyss: #0b3336;
+    --abyss: #08282b;
     --ink: #f2f6f6;
     --soft-ink: #c1d2d3;
     --faint: #7c9294;
@@ -58,9 +58,9 @@
     inset: 0;
     z-index: -3;
     background:
-      radial-gradient(ellipse 130% 90% at 50% -15%, #054750 0%, transparent 55%),
-      radial-gradient(ellipse 100% 60% at 85% 110%, #072e34 0%, transparent 60%),
-      linear-gradient(172deg, #11132400 0%, #031c1f 40%, #041a1d 100%);
+      radial-gradient(ellipse 130% 90% at 50% -15%, #05464e 0%, transparent 55%),
+      radial-gradient(ellipse 100% 60% at 85% 110%, #072d33 0%, transparent 60%),
+      linear-gradient(172deg, #11132400 0%, #031b1f 40%, #03191c 100%);
   }
 
   .backdrop::before, .backdrop::after {
@@ -73,14 +73,14 @@
   .backdrop::before {
     width: 90vw; height: 90vw;
     top: -28vw; right: -32vw;
-    background: radial-gradient(circle, rgba(86,172,183, 0.32) 0%, rgba(20,151,169, 0.12) 50%, transparent 75%);
+    background: radial-gradient(circle, rgba(86,172,183, 0.32) 0%, rgba(20,148,165, 0.12) 50%, transparent 75%);
     animation: drift1 30s ease-in-out infinite alternate;
   }
 
   .backdrop::after {
     width: 95vw; height: 95vw;
     bottom: -38vw; left: -32vw;
-    background: radial-gradient(circle, rgba(21,113,126, 0.3) 0%, rgba(160, 128, 75, 0.09) 55%, transparent 78%);
+    background: radial-gradient(circle, rgba(21,111,123, 0.3) 0%, rgba(160, 128, 75, 0.09) 55%, transparent 78%);
     animation: drift2 36s ease-in-out infinite alternate;
   }
 
@@ -162,23 +162,23 @@
     background:
       linear-gradient(115deg, rgba(255,255,255,0.10), transparent 34%),
       linear-gradient(180deg, rgba(255,255,255,0.06), transparent 26%),
-      linear-gradient(155deg, rgba(14,69,76,0.82), rgba(10,56,62,0.80) 55%, rgba(11,63,70,0.82));
+      linear-gradient(155deg, rgba(13,68,75,0.82), rgba(10,55,61,0.80) 55%, rgba(10,61,68,0.82));
   }
-  .droid .glass-pill { background: rgba(10,56,62,0.85); }
+  .droid .glass-pill { background: rgba(10,55,61,0.85); }
   .droid .pc-card {
     background:
       linear-gradient(115deg, rgba(255,255,255,0.10), transparent 34%),
       linear-gradient(180deg, rgba(255,255,255,0.06), transparent 26%),
-      linear-gradient(155deg, rgba(14,69,76,0.82), rgba(10,56,62,0.80) 55%, rgba(11,63,70,0.82));
+      linear-gradient(155deg, rgba(13,68,75,0.82), rgba(10,55,61,0.80) 55%, rgba(10,61,68,0.82));
   }
-  .droid .dock { background: rgba(4,41,46,0.94); }
-  .droid .paysheet { background: rgba(1,22,24,0.84); }
-  .droid .paysheet-card { background: rgba(6,48,53,0.985); }
-  .droid .paywall { background: rgba(1,26,29,0.975); }
+  .droid .dock { background: rgba(4,40,45,0.94); }
+  .droid .paysheet { background: rgba(1,21,24,0.84); }
+  .droid .paysheet-card { background: rgba(6,46,52,0.985); }
+  .droid .paywall { background: rgba(1,25,29,0.975); }
   .droid .fullplayer {
     background:
-      radial-gradient(ellipse 120% 70% at 50% -10%, rgba(11,103,115,0.55), transparent 60%),
-      rgba(1,26,29, 0.985);
+      radial-gradient(ellipse 120% 70% at 50% -10%, rgba(11,100,112,0.55), transparent 60%),
+      rgba(1,25,29, 0.985);
   }
   /* длинные названия («Исцеление отношений с мамой», «Поток · утренняя медитация»)
      на Android переносились: шрифты там шире. Название чуть компактнее, карточке — больше места */
@@ -906,7 +906,7 @@
     right: -4px; bottom: -4px;
     width: 19px; height: 19px;
     border-radius: 50%;
-    background: rgba(4,41,46, 0.95);
+    background: rgba(4,40,45, 0.95);
     border: 1px solid rgba(201,174,125,0.45);
     display: flex; align-items: center; justify-content: center;
     color: var(--gold);
@@ -958,7 +958,7 @@
     cursor: pointer;
   }
   .hist-page.active {
-    color: #04343a;
+    color: #043339;
     background: linear-gradient(180deg, #d3b98a, #b0925f);
     border-color: rgba(255,244,220,0.5);
     font-weight: 600;
@@ -1058,14 +1058,14 @@
     inset: 22px;
     border-radius: 50%;
     background:
-      radial-gradient(circle at 32% 28%, rgba(220,224,224,0.18), rgba(118,187,197,0.10) 45%, rgba(9,59,66,0.2) 80%);
+      radial-gradient(circle at 32% 28%, rgba(220,224,224,0.18), rgba(118,187,197,0.10) 45%, rgba(8,58,65,0.2) 80%);
     backdrop-filter: blur(14px);
     border: 1px solid rgba(220,224,224,0.16);
     box-shadow:
       0 20px 60px rgba(0,4,4,0.5),
       0 0 60px rgba(118,187,197,0.15),
       inset 0 2px 16px rgba(255,255,255,0.10),
-      inset 0 -12px 32px rgba(11,119,133,0.25);
+      inset 0 -12px 32px rgba(11,116,130,0.25);
     transition: transform 4s ease-in-out, box-shadow 4s ease-in-out;
   }
 
@@ -1075,7 +1075,7 @@
       0 20px 60px rgba(0,4,4,0.5),
       0 0 90px rgba(118,187,197,0.30),
       inset 0 2px 16px rgba(255,255,255,0.14),
-      inset 0 -12px 32px rgba(11,119,133,0.25);
+      inset 0 -12px 32px rgba(11,116,130,0.25);
   }
 
   .glass-sphere.exhale { transform: scale(0.96); }
@@ -1496,7 +1496,7 @@
     position: fixed;
     inset: 0;
     z-index: 160;
-    background: rgba(1,26,29, 0.92);
+    background: rgba(1,25,29, 0.92);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     overflow-y: auto;
@@ -1642,7 +1642,7 @@
     position: fixed;
     inset: 0;
     z-index: 170;
-    background: rgba(1,22,24, 0.7);
+    background: rgba(1,21,24, 0.7);
     backdrop-filter: blur(8px);
   }
 
@@ -1662,7 +1662,7 @@
     max-width: 440px;
     padding: 26px 24px;
     border-radius: 28px;
-    background: rgba(6,48,53, 0.92);
+    background: rgba(6,46,52, 0.92);
     backdrop-filter: blur(32px);
     border: 1px solid rgba(255,255,255,0.16);
     box-shadow: 0 20px 60px rgba(0,4,4,0.6);
@@ -1771,7 +1771,7 @@
     position: fixed;
     inset: 0;
     z-index: 950;
-    background: radial-gradient(ellipse 120% 80% at 50% 40%, #043238, #031c1f 70%);
+    background: radial-gradient(ellipse 120% 80% at 50% 40%, #033137, #031b1f 70%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1804,7 +1804,7 @@
     position: fixed;
     inset: 0;
     z-index: 999;
-    background: radial-gradient(ellipse 120% 80% at 50% 40%, #043238, #031c1f 70%);
+    background: radial-gradient(ellipse 120% 80% at 50% 40%, #033137, #031b1f 70%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2015,8 +2015,8 @@
     inset: 0;
     z-index: 150;
     background:
-      radial-gradient(ellipse 120% 70% at 50% -10%, rgba(11,103,115,0.55), transparent 60%),
-      rgba(1,26,29, 0.96);
+      radial-gradient(ellipse 120% 70% at 50% -10%, rgba(11,100,112,0.55), transparent 60%),
+      rgba(1,25,29, 0.96);
     backdrop-filter: blur(30px);
     -webkit-backdrop-filter: blur(30px);
     flex-direction: column;
@@ -2216,7 +2216,7 @@
     max-width: 448px;
     padding: 14px 18px 12px;
     border-radius: 24px;
-    background: rgba(5,45,51, 0.78);
+    background: rgba(5,44,50, 0.78);
     backdrop-filter: blur(32px) saturate(1.4);
     -webkit-backdrop-filter: blur(32px) saturate(1.4);
     border: 1px solid rgba(255,255,255,0.15);
@@ -2308,7 +2308,7 @@
     bottom: calc(160px + env(safe-area-inset-bottom));
     padding: 12px 24px;
     border-radius: 40px;
-    background: rgba(5,45,51, 0.85);
+    background: rgba(5,44,50, 0.85);
     backdrop-filter: blur(24px);
     border: 1px solid rgba(255,255,255,0.14);
     box-shadow: 0 12px 36px rgba(0,4,4,0.5);
@@ -2331,7 +2331,7 @@
     top: 42%;
     padding: 22px 30px;
     border-radius: 24px;
-    background: linear-gradient(135deg, rgba(201,174,125,0.32), rgba(176,146,95,0.18)), rgba(3,39,44,0.9);
+    background: linear-gradient(135deg, rgba(201,174,125,0.32), rgba(176,146,95,0.18)), rgba(3,38,43,0.9);
     border: 1px solid rgba(201,174,125,0.55);
     box-shadow: 0 18px 60px rgba(0,4,4,0.65), 0 0 40px rgba(201,174,125,0.18);
     color: var(--gold);
@@ -2372,9 +2372,9 @@
     z-index: 90;
     pointer-events: none;
     background: linear-gradient(to top,
-      rgba(3,28,31,0.94) 0%,
-      rgba(3,28,31,0.62) 34%,
-      rgba(3,28,31,0.22) 62%,
+      rgba(3,27,31,0.94) 0%,
+      rgba(3,27,31,0.62) 34%,
+      rgba(3,27,31,0.22) 62%,
       transparent 100%);
   }
 
@@ -2388,7 +2388,7 @@
     display: flex;
     padding: 8px;
     border-radius: 60px;
-    background: rgba(4,41,46, 0.6);
+    background: rgba(4,40,45, 0.6);
     backdrop-filter: blur(32px) saturate(1.4);
     -webkit-backdrop-filter: blur(32px) saturate(1.4);
     border: 1px solid rgba(255,255,255,0.12);
@@ -2428,7 +2428,7 @@
     display: none;
     position: fixed;
     inset: 0;
-    background: rgba(3,28,31,0.85);
+    background: rgba(3,27,31,0.85);
     backdrop-filter: blur(28px);
     -webkit-backdrop-filter: blur(28px);
     z-index: 200;
@@ -3152,8 +3152,8 @@ if (tg) {
     }
   });
   try { tg.onEvent('activated', function () { if (window.__reapplySafe) window.__reapplySafe(); }); } catch (e) {}
-  tg.setHeaderColor('#031c1f');
-  tg.setBackgroundColor('#031c1f');
+  tg.setHeaderColor('#031b1f');
+  tg.setBackgroundColor('#031b1f');
   // Запрет свайпа-закрытия — только на iOS: на Android эта команда ломает прокрутку
   if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); // свайп внутри приложения — прокрутка, а не сворачивание
   cloudAvailable = !!(tg.CloudStorage && tg.isVersionAtLeast && tg.isVersionAtLeast('6.9'));
@@ -5058,7 +5058,7 @@ const FOUNDING = true;
 
 // Валютная оплата через Lava.top ($ / €). Ссылки на подписки:
 // стандарт: $39/мес · $329/год; основательницы: $25/мес · $259/год (период выбирается на странице Lava)
-const APP_BUILD = 86; // внутренняя метка, в интерфейсе не показывается // метка сборки: внизу Пути, детектор кэша Telegram
+const APP_BUILD = 87; // внутренняя метка, в интерфейсе не показывается // метка сборки: внизу Пути, детектор кэша Telegram
 
 // клавиатура iOS: поле email в фокусе → шторка поднимается наверх
 document.querySelectorAll('.claim-input').forEach(inp => {
@@ -5647,16 +5647,16 @@ loadSessions(() => {
 @font-face { font-family:'Manrope'; font-style:normal; font-weight:400; font-display:swap; src:url('fonts/manrope-400.woff2') format('woff2'); }
 @font-face { font-family:'Manrope'; font-style:normal; font-weight:500; font-display:swap; src:url('fonts/manrope-500.woff2') format('woff2'); }
 
-  /* === VERUM v86 · Deep Teal #0F3D3E: один холодный тон, без мерцаний === */
+  /* === VERUM v87 · Deep Teal, финальная глубина (айфон ярче мака — тон ниже) === */
   .aurora, .stars, .stars2, .vignette { display: none !important; }
-  .backdrop { background: linear-gradient(180deg, #114a4e 0%, #0f3d3e 45%, #092a2d 100%) !important; }
+  .backdrop { background: linear-gradient(180deg, #0d3c40 0%, #0b3134 45%, #062124 100%) !important; }
   .backdrop::before, .backdrop::after { display: none !important; }
-  html, body { background: #0f3d3e !important; }
+  html, body { background: #0b3134 !important; }
   .glass-card {
-    background: linear-gradient(180deg, rgba(32,102,107,0.42), rgba(13,56,60,0.40)) !important;
-    border-color: rgba(214,236,236,0.13) !important;
+    background: linear-gradient(180deg, rgba(23,82,87,0.40), rgba(9,42,46,0.40)) !important;
+    border-color: rgba(210,234,234,0.12) !important;
   }
-  .dock { background: rgba(10,49,52,0.92) !important; border-color: rgba(214,236,236,0.10) !important; }
+  .dock { background: rgba(7,38,41,0.93) !important; border-color: rgba(210,234,234,0.10) !important; }
 </style>
 </body>
 </html>
