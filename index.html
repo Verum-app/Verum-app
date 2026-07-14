@@ -2504,7 +2504,6 @@
 
 <div class="backdrop"></div>
 <div class="aurora"><i class="au1"></i><i class="au2"></i><i class="au3"></i></div>
-<div class="warm-light"></div>
 <div class="grain"></div>
 <div class="stars"></div>
 <div class="stars2"></div>
@@ -5076,7 +5075,7 @@ const FOUNDING = true;
 
 // Валютная оплата через Lava.top ($ / €). Ссылки на подписки:
 // стандарт: $39/мес · $329/год; основательницы: $25/мес · $259/год (период выбирается на странице Lava)
-const APP_BUILD = 100; // внутренняя метка, в интерфейсе не показывается // метка сборки: внизу Пути, детектор кэша Telegram
+const APP_BUILD = 101; // внутренняя метка, в интерфейсе не показывается // метка сборки: внизу Пути, детектор кэша Telegram
 
 // клавиатура iOS: поле email в фокусе → шторка поднимается наверх
 document.querySelectorAll('.claim-input').forEach(inp => {
@@ -5667,16 +5666,6 @@ loadSessions(() => {
 
   /* === VERUM v96 · 95-я + лечение мелодии таймера === */
   .aurora { display: none !important; }
-
-  /* тёплый свет референса: статичное золотое пятно-«лампа», без анимации */
-  .warm-light {
-    position: fixed;
-    top: -18vh; right: -22vw;
-    width: 90vw; height: 90vw;
-    background: radial-gradient(circle closest-side, rgba(206,176,120,0.16), rgba(206,176,120,0.05) 55%, transparent 75%);
-    pointer-events: none;
-    z-index: 0;
-  }
 
   /* зерно ткани: тончайший статичный шум — темнота становится бархатом, а не пластиком */
   .grain {
