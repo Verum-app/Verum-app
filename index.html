@@ -5873,6 +5873,35 @@ loadSessions(() => {
   /* dock: строгость — капсулу-заливку убрать, остаётся золотая нить */
   .dock-item.active { background: none !important; box-shadow: none !important; }
   .dock-item.active::after { width: 26px !important; }
+
+  /* === VERUM v101 · фоны экранов в один тон + фикс блока «Практика дня» ===
+     1) Полноэкранный плеер и paywall жили на старом серо-тиловом — теперь та же толща воды, что и фон.
+     2) Длительность в блоке практики дня возвращена к прежнему виду (мелкие капсы Manrope):
+        серифные цифры остаются только в кнопках таймера. */
+  .practice-meta .p-dur { font-family: 'Manrope', sans-serif !important;
+    font-size: 10px !important; letter-spacing: 0.3em !important; text-transform: uppercase !important; }
+  .fullplayer { background:
+      radial-gradient(ellipse 110% 42% at 50% -10%, rgba(222,238,244,0.11), transparent 60%),
+      linear-gradient(180deg, rgba(9,38,48,0.97) 0%, rgba(4,22,28,0.97) 46%, rgba(1,7,10,0.98) 100%) !important; }
+  .droid .fullplayer { background:
+      radial-gradient(ellipse 110% 42% at 50% -10%, rgba(222,238,244,0.11), transparent 60%),
+      linear-gradient(180deg, #092630 0%, #04161c 46%, #01070a 100%) !important; }
+  .paywall { background:
+      radial-gradient(ellipse 110% 42% at 50% -10%, rgba(222,238,244,0.08), transparent 60%),
+      linear-gradient(180deg, rgba(7,30,38,0.96) 0%, rgba(3,17,22,0.97) 46%, rgba(1,6,9,0.98) 100%) !important; }
+  .droid .paywall { background:
+      radial-gradient(ellipse 110% 42% at 50% -10%, rgba(222,238,244,0.08), transparent 60%),
+      linear-gradient(180deg, #071e26 0%, #031116 46%, #010609 100%) !important; }
+
+  /* === VERUM v102 · подписи 3b + иерархия блока практики дня ===
+     faint = туман над водой #93A7AC (s 12% — салатовость ушла, глубина осталась).
+     Название/описание/время в практике дня разведены: имя крупнее, описание меньше,
+     тише и с воздухом — три строки перестали сливаться в одну массу. */
+  :root { --faint: #93a7ac; }
+  .practice-meta .p-name { font-size: 19px !important; line-height: 1.25 !important; }
+  .practice-meta .p-desc { font-size: 11px !important; line-height: 1.5 !important;
+    color: rgba(147,167,172,0.92) !important; margin: 6px 0 7px !important; }
+  .practice-meta .p-dur { color: rgba(147,167,172,0.75) !important; }
 </style>
 </body>
 </html>
