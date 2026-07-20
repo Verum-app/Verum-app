@@ -2501,6 +2501,18 @@
      пока telegram.org не ответит. Теперь искра-сплэш рисуется ДО загрузки скрипта.
      Весь код приложения ниже по файлу — window.Telegram успевает появиться. -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+/* VERUM v107: полоса снизу при старте — это bottomBar Telegram со своим цветом по умолчанию.
+   Красим header/фон/нижнюю панель в канон сразу, первой строкой после загрузки SDK,
+   до построения приложения (основной скрипт внизу файла срабатывает позже). */
+(function(){try{
+  var t = window.Telegram && window.Telegram.WebApp;
+  if(!t) return;
+  try{t.setHeaderColor('#092630');}catch(e){}
+  try{t.setBackgroundColor('#04161c');}catch(e){}
+  try{t.setBottomBarColor('#04161c');}catch(e){}
+}catch(e){}})();
+</script>
 
 <div class="backdrop"></div>
 <div class="aurora"><i class="au1"></i><i class="au2"></i><i class="au3"></i></div>
@@ -3155,6 +3167,7 @@ if (tg) {
   try { tg.onEvent('activated', function () { if (window.__reapplySafe) window.__reapplySafe(); }); } catch (e) {}
   tg.setHeaderColor('#092630');
   tg.setBackgroundColor('#04161c');
+  try { if (tg.setBottomBarColor) tg.setBottomBarColor('#04161c'); } catch (e) {}
   // Запрет свайпа-закрытия — только на iOS: на Android эта команда ломает прокрутку
   if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); // свайп внутри приложения — прокрутка, а не сворачивание
   cloudAvailable = !!(tg.CloudStorage && tg.isVersionAtLeast && tg.isVersionAtLeast('6.9'));
