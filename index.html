@@ -5981,6 +5981,50 @@ loadSessions(() => {
     border: 1px solid rgba(201,174,125,0.5) !important;
     color: #f6e7c2 !important;
   }
+
+  /* === VERUM v105 · сердечки-белые обратно, глубина таймера, кнопки плей без латуни ===
+     Сердечки: жемчужно-белые вернулись (золотые не легли телу — принято).
+     Таймер: сфера стала толщей воды — тил-стекло с холодным светом сверху и глубокой тенью,
+     мягкое тиловое свечение вокруг; при вдохе свет усиливается. Кнопки плей/пауза во всех
+     практиках: латунная заливка -> тил-стекло, золото только в контуре и знаке. */
+  .fav-heart.on { fill: #dee4e5 !important; filter: drop-shadow(0 0 5px rgba(222,228,229,0.4)) !important; }
+  .comp-fav.done { border-color: rgba(220,224,224,0.35) !important; color: var(--pearl) !important; }
+  /* сфера таймера/дыхания */
+  .glass-sphere {
+    background:
+      radial-gradient(circle at 32% 24%, rgba(222,238,244,0.22), rgba(20,88,98,0.16) 42%, rgba(6,26,32,0.42) 78%),
+      linear-gradient(180deg, rgba(16,68,76,0.30), rgba(4,18,23,0.55)) !important;
+    border: 1px solid rgba(220,244,246,0.20) !important;
+    box-shadow:
+      0 26px 64px rgba(0,4,7,0.60),
+      0 0 70px rgba(24,110,122,0.28),
+      inset 0 2px 18px rgba(255,255,255,0.13),
+      inset 0 -16px 40px rgba(3,16,20,0.55) !important;
+  }
+  .glass-sphere.inhale {
+    box-shadow:
+      0 26px 64px rgba(0,4,7,0.60),
+      0 0 110px rgba(30,132,144,0.42),
+      inset 0 2px 18px rgba(255,255,255,0.18),
+      inset 0 -16px 40px rgba(3,16,20,0.55) !important;
+  }
+  /* кнопки плей: тил-стекло + золотой контур */
+  .fp-play {
+    background:
+      radial-gradient(circle at 32% 26%, rgba(222,238,244,0.14), transparent 55%),
+      linear-gradient(180deg, rgba(16,68,76,0.62), rgba(5,22,26,0.80)) !important;
+    border: 1px solid rgba(201,174,125,0.55) !important;
+    color: #f6e7c2 !important;
+    box-shadow: 0 14px 40px rgba(0,4,6,0.5), 0 0 42px rgba(24,110,122,0.25), inset 0 1px 3px rgba(255,255,255,0.22) !important;
+  }
+  .play-glass {
+    background:
+      radial-gradient(circle at 32% 26%, rgba(222,238,244,0.14), transparent 55%),
+      linear-gradient(180deg, rgba(16,68,76,0.62), rgba(5,22,26,0.80)) !important;
+    border: 1px solid rgba(201,174,125,0.55) !important;
+    color: #f6e7c2 !important;
+    box-shadow: 0 12px 36px rgba(0,4,6,0.45), 0 0 38px rgba(24,110,122,0.24), inset 0 1px 3px rgba(255,255,255,0.22) !important;
+  }
 </style>
 </body>
 </html>
