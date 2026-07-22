@@ -2542,6 +2542,7 @@
 
   <!-- ===== TODAY ===== -->
   <div class="screen active" id="screen-today">
+    <div class="today-greeting">Здравствуй, милая&nbsp;<svg class="tg-heart" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20.2C7 15.8 2.4 12.2 2.4 7.6 2.4 4.6 4.7 2.4 7.5 2.4 9.3 2.4 11 3.4 12 5 13 3.4 14.7 2.4 16.5 2.4 19.3 2.4 21.6 4.6 21.6 7.6 21.6 12.2 17 15.8 12 20.2Z" stroke="#c9ae7d" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
     <div class="glass-card potok-card" id="potokCard">
       <svg class="potok-banner" viewBox="0 0 400 118" xmlns="http://www.w3.org/2000/svg">
         <defs>
@@ -2647,7 +2648,7 @@
           <div class="pr-eyebrow">Манифест</div>
           <div class="pr-title">Философия VERUM</div>
         </div>
-        <div class="chev">▼</div>
+        <div class="chev"><svg viewBox="0 0 12 8" width="12" height="8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.5 1.75L6 6.25L10.5 1.75" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       </div>
       <div class="philosophy-text">
         <div class="manifesto">
@@ -4435,10 +4436,28 @@ function calcStreak() {
   return streak;
 }
 
+// Русские склонения по числу: 1 день · 2 дня · 5 дней
+function plural3(n, one, few, many) {
+  const a = Math.abs(n) % 100, b = a % 10;
+  if (a > 10 && a < 20) return many;
+  if (b > 1 && b < 5) return few;
+  if (b === 1) return one;
+  return many;
+}
+// Ставит число и подпись плитки согласованно (подпись — соседний .streak-label)
+function setStat(numId, n, one, few, many) {
+  const el = document.getElementById(numId);
+  if (!el) return;
+  el.textContent = n;
+  const lbl = el.parentElement && el.parentElement.querySelector('.streak-label');
+  if (lbl) lbl.textContent = plural3(n, one, few, many);
+}
+
 function renderTodayStats() {
-  document.getElementById('tStreak').textContent = calcStreak();
-  document.getElementById('tSessions').textContent = sessions.length;
-  document.getElementById('tMinutes').textContent = sessions.reduce((a,s) => a + (s.minutes||0), 0);
+  const mins = sessions.reduce((a, s) => a + (s.minutes || 0), 0);
+  setStat('tStreak', calcStreak(), 'день подряд', 'дня подряд', 'дней подряд');
+  setStat('tSessions', sessions.length, 'практика', 'практики', 'практик');
+  setStat('tMinutes', mins, 'минута', 'минуты', 'минут');
 }
 
 // Календарь практик: листается по месяцам
@@ -4493,9 +4512,9 @@ function renderPath() {
   document.getElementById('screen-path').classList.toggle('sub-locked', !subActive);
   // рисуем содержимое всегда — под замком оно показывается «под стеклом» (превью),
   // используя реальный локальный прогресс (бесплатная игра ПОТОК уже даёт историю)
-  document.getElementById('statStreak').textContent = calcStreak();
-  document.getElementById('statTotal').textContent = sessions.length;
-  document.getElementById('statMinutes').textContent = sessions.reduce((a,s) => a + (s.minutes||0), 0);
+  setStat('statStreak', calcStreak(), 'день подряд', 'дня подряд', 'дней подряд');
+  setStat('statTotal', sessions.length, 'сессия', 'сессии', 'сессий');
+  setStat('statMinutes', sessions.reduce((a, s) => a + (s.minutes || 0), 0), 'минута', 'минуты', 'минут');
 
   renderCalendar();
 
@@ -6299,6 +6318,18 @@ loadSessions(() => {
   .hp-arrow:active:not(:disabled) { transform: scale(0.9); }
   .hp-arrow:disabled { opacity: 0.3; cursor: default; border-color: rgba(220,244,246,0.12); color: var(--faint); }
   .hp-count { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); min-width: 96px; text-align: center; }
+
+  /* === VERUM v112 · приветствие на «Сегодня» + тонкий шеврон манифеста === */
+  .today-greeting {
+    display: flex; align-items: center; justify-content: center; gap: 3px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 19px;
+    color: var(--soft-ink);
+    margin: 2px 0 18px;
+  }
+  .tg-heart { width: 15px; height: 14px; display: inline-block; vertical-align: -1px; }
+  .chev svg { display: block; }
 </style>
 </body>
 </html>
