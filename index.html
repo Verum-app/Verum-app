@@ -6192,6 +6192,27 @@ loadSessions(() => {
   .consent-text { font-size: 11.5px; line-height: 1.5; color: var(--soft-ink); }
   .ps-consent.shake { animation: psShake 0.5s ease; }
   @keyframes psShake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+  /* === VERUM v109 · единый язык состояний «как в календаре» ===
+     Эталон активного = тил-стекло + золотой контур + золотой текст (день practiced).
+     Приводим к нему: категории библиотеки, пилюли валюты, кнопки таймера,
+     кружки плея; цена в шапке шторки оплаты — золотом и плотнее. */
+  .cat-chip.active,
+  .cur-pill.active,
+  .dur-btn.active {
+    background: linear-gradient(180deg, rgba(16,68,76,0.55), rgba(5,22,26,0.70)) !important;
+    border: 1px solid rgba(201,174,125,0.5) !important;
+    box-shadow: 0 0 14px rgba(201,174,125,0.15) !important;
+    color: var(--gold) !important;
+    text-shadow: none !important;
+  }
+  /* кружки плея в практиках — тот же тил-стеклянный фон + мягкий золотой контур */
+  .med-icon {
+    background: linear-gradient(180deg, rgba(16,68,76,0.55), rgba(5,22,26,0.70)) !important;
+    border: 1px solid rgba(201,174,125,0.3) !important;
+  }
+  /* цена в шапке шторки оплаты — золотом и плотнее (как карточки стартового paywall) */
+  .ps-price { color: var(--gold); font-weight: 500; }
 </style>
 </body>
 </html>
