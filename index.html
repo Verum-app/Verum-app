@@ -2991,12 +2991,12 @@
   <div class="paysheet-card">
     <div class="ps-title" id="psTitle">Оплата подписки</div>
     <div class="ps-sub">выберите способ оплаты</div>
+    <button class="ps-btn" onclick="payRub()">Картой РФ · в рублях</button>
+    <button class="ps-btn" onclick="payValuta()">Зарубежной картой · $ / €</button>
     <div class="ps-consent">
       <input type="checkbox" id="consentChk" class="consent-chk">
       <div class="consent-text">Я принимаю <span class="legal-link" onclick="openLegal(OFERTA_LINK)">условия оферты</span> и <span class="legal-link" onclick="openLegal(PRIVACY_LINK)">политику конфиденциальности</span></div>
     </div>
-    <button class="ps-btn" onclick="payRub()">Картой РФ · в рублях</button>
-    <button class="ps-btn" onclick="payValuta()">Зарубежной картой · $ / €</button>
     <div class="ps-claim" onclick="openClaim()">Уже оплатили зарубежной картой? Активировать →</div>
     <div class="ps-cancel" onclick="closePaysheet()">← назад</div>
   </div>
@@ -5118,9 +5118,9 @@ function updateLavaUI() {
       const std = currentPlan === 'year' ? LAVA_PRICES.year : LAVA_PRICES.month;
       const stdAmt = lavaCurrency === 'EUR' ? std.EUR : std.USD;
       if (currentPlan === 'year') {
-        gift.innerHTML = ICON_GIFT + ' цена основательниц · 3,5 месяца в подарок<br><span class="lava-instead">вместо <s>' + sym + ' ' + stdAmt + '</s></span>';
+        gift.innerHTML = ICON_GIFT + ' 3,5 месяца в подарок · цена основательниц<br><span class="lava-instead">вместо <s>' + sym + ' ' + stdAmt + '</s></span>';
       } else {
-        gift.innerHTML = '✦ цена основательниц · вместо <s>' + sym + ' ' + stdAmt + '</s>';
+        gift.innerHTML = '✦ цена основательниц · <span class="lava-instead">вместо <s>' + sym + ' ' + stdAmt + '</s></span>';
       }
     } else {
       gift.textContent = currentPlan === 'year' ? '3,5 месяца в подарок' : '';
@@ -6124,8 +6124,8 @@ loadSessions(() => {
     flex-shrink: 0;
     text-align: right;
   }
-  /* основная цена крупнее; в одну строку, ₽ не съезжает */
-  .plan-price { font-size: 22px !important; white-space: nowrap !important; line-height: 1.15 !important; }
+  /* основная цена крупнее и чуть плотнее (Cormorant 500), в одну строку, ₽ не съезжает */
+  .plan-price { font-size: 22px !important; font-weight: 500 !important; white-space: nowrap !important; line-height: 1.15 !important; }
   .plan-old {
     display: block;
     font-family: 'Cormorant Garamond', serif;
@@ -6159,8 +6159,8 @@ loadSessions(() => {
       inset 0 0 30px rgba(242,224,182,0.16),
       0 0 26px rgba(234,206,150,0.30) !important;
   }
-  /* ссылки на оферту/политику в мелком тексте */
-  .legal-link { color: var(--soft-ink); text-decoration: underline; text-decoration-color: rgba(201,174,125,0.55); text-underline-offset: 2px; cursor: pointer; }
+  /* ссылки на оферту/политику — тонкая БЕЛАЯ линия (не золотая) */
+  .legal-link { color: var(--soft-ink); text-decoration: underline; text-decoration-color: rgba(230,238,238,0.42); text-decoration-thickness: 0.7px; text-underline-offset: 2px; cursor: pointer; }
   /* строка выгоды в Lava-шторке — тёплое золото фирменное */
   .lava-gift {
     text-align: center;
@@ -6172,10 +6172,20 @@ loadSessions(() => {
   }
   .lava-gift:empty { display: none; }
   .lava-gift .gift-ic { color: var(--gold); margin-right: 2px; vertical-align: -1px; }
-  .lava-gift .lava-instead { display: inline-block; margin-top: 2px; }
+  /* «вместо …» — обычным холодным цветом, НЕ золотым (для года — с новой строки по центру) */
+  .lava-gift .lava-instead { display: inline-block; margin-top: 2px; color: var(--soft-ink); }
   .lava-gift s { color: var(--faint); text-decoration-color: rgba(201,174,125,0.5); }
+  /* активная пилюля валюты — золотая ОБВОДКА как у категорий в библиотеке (не заливка),
+     чтобы не путалась с большой золотой кнопкой оплаты */
+  .cur-pill.active {
+    background: var(--glass-strong) !important;
+    border: 1px solid rgba(201,174,125,0.85) !important;
+    box-shadow: 0 0 10px rgba(201,174,125,0.18) !important;
+    color: var(--gold) !important;
+    text-shadow: none !important;
+  }
   /* согласие с офертой/политикой — обязательная галочка перед оплатой */
-  .ps-consent { display: flex; align-items: flex-start; gap: 9px; text-align: left; margin: 4px 2px 16px; padding: 0 4px; }
+  .ps-consent { display: flex; align-items: flex-start; gap: 9px; text-align: left; margin: 14px 2px 4px; padding: 0 4px; }
   .consent-chk { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; accent-color: #C9AE7D; cursor: pointer; }
   .consent-text { font-size: 11.5px; line-height: 1.5; color: var(--soft-ink); }
   .ps-consent.shake { animation: psShake 0.5s ease; }
