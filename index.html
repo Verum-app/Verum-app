@@ -2615,6 +2615,25 @@
       </div>
     </div>
 
+    <!-- Дневник состояния: вход в ежедневный ритуал прямо с «Сегодня» (VERUM v116).
+         Тап по звезде = мгновенная отметка; «выплеснуть» открывает полноэкранный лист. -->
+    <div class="glass-card checkin-today" id="checkinToday">
+      <div class="ct-eyebrow">Дневник · как ты?</div>
+      <div class="ct-phrase" id="ctPhrase"></div>
+      <div class="ct-slots">
+        <div class="ct-slot" id="ctSlotM">
+          <div class="ct-slot-label">утро</div>
+          <div class="ct-stars" id="ctStarsM"></div>
+        </div>
+        <div class="ct-slot" id="ctSlotE">
+          <div class="ct-slot-label">вечер</div>
+          <div class="ct-stars" id="ctStarsE"></div>
+        </div>
+      </div>
+      <div class="ct-caption" id="ctCaption">&nbsp;</div>
+      <div class="ct-note-link" id="ctNoteLink" onclick="openWriteSheet()">выплеснуть пару строк →</div>
+    </div>
+
     <div class="section-eyebrow" style="margin-top:22px">Продолжить путь</div>
     <div class="path-carousel" id="pathCarousel"></div>
 
@@ -2847,7 +2866,7 @@
     <div class="journal-tabs">
       <button class="jt-tab active" id="jtState" onclick="setJournalTab('state')">Состояние</button>
       <button class="jt-tab" onclick="setJournalTab('goals')">Намерения</button>
-      <button class="jt-tab" onclick="setJournalTab('mani')">Материализации</button>
+      <button class="jt-tab" onclick="setJournalTab('mani')">Отклики</button>
     </div>
     <div class="glass-card cal-card">
       <div class="cal-nav">
@@ -2857,7 +2876,7 @@
       </div>
       <div class="cal-grid" id="calGrid"></div>
       <div class="cal-legend" id="calLegend"></div>
-      <div class="cal-state-hint">коснитесь дня — состояние, практики и заметка</div>
+      <div class="cal-state-hint">коснись дня — состояние, практики и заметка</div>
     </div>
 
     <div class="section-eyebrow" id="historyEyebrow">История практик</div>
@@ -3078,51 +3097,87 @@
     </div>
     <div class="jo-period" id="goalPeriod"></div>
     <div class="jo-list" id="goalList"></div>
+    <div class="jo-hint" id="goalListHint" style="display:none">✦ коснись звезды — сбылось · долгое нажатие — удалить</div>
     <div class="jo-add">
-      <textarea class="claim-input jo-input" id="goalInput" rows="2" placeholder="Новое намерение…"></textarea>
+      <textarea class="claim-input jo-input" id="goalInput" rows="2" placeholder="Я … — и я чувствую …"></textarea>
+      <div class="jo-gen-hint">настоящее время · от первого лица · с чувством</div>
+      <!-- WOOP: необязательный план «если — то» (самый доказательный апгрейд намерений) -->
+      <div class="jo-plan-link" id="goalPlanLink" onclick="toggleGoalPlan()">✦ если что-то помешает — мой план…</div>
+      <textarea class="claim-input jo-input" id="goalPlan" rows="2" placeholder="Если … — то я …" style="display:none"></textarea>
       <div class="jo-add-row">
         <button class="jo-photo-btn" id="goalPhotoBtn" onclick="attachGoalPhoto()">✦ фото</button>
         <button class="ps-btn jo-save" onclick="addGoal()">Записать</button>
       </div>
     </div>
+    <!-- прошлая страница недели: только чтение, без переноса — новую неделю переписываем заново -->
+    <div class="jo-past" id="goalPast"></div>
     <div class="jo-reflect" id="weekReflect" style="display:none">
       <div class="section-eyebrow" id="reflectTitle">Рефлексия недели</div>
       <div class="reflect-hint" id="reflectHint"></div>
       <div class="jo-moons-week" id="weekMoons"></div>
-      <div class="jr-label">Что получилось</div>
-      <textarea class="claim-input jo-input" id="rWell" rows="2"></textarea>
-      <div class="jr-label">Что улучшить</div>
-      <textarea class="claim-input jo-input" id="rImprove" rows="2"></textarea>
-      <div class="jr-label">Чему научилась</div>
-      <textarea class="claim-input jo-input" id="rLearned" rows="2"></textarea>
-      <button class="ps-btn jo-save" onclick="saveReflection()">Сохранить рефлексию</button>
+      <div class="reflect-invite" id="reflectInvite" style="display:none"></div>
+      <div id="reflectBody">
+        <div class="jr-label">что получилось?</div>
+        <textarea class="claim-input jo-input" id="rWell" rows="2"></textarea>
+        <div class="jr-label">что хочется улучшить?</div>
+        <textarea class="claim-input jo-input" id="rImprove" rows="2"></textarea>
+        <div class="jr-label">чему ты научилась?</div>
+        <textarea class="claim-input jo-input" id="rLearned" rows="2"></textarea>
+        <button class="ps-btn jo-save" onclick="saveReflection()">Сохранить рефлексию</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ===== ДНЕВНИК «МАТЕРИАЛИЗАЦИИ» ===== -->
+<!-- ===== ДНЕВНИК «ОТКЛИКИ РЕАЛЬНОСТИ» (v116: лента первой, форма — шитом) ===== -->
 <div class="journal-overlay" id="journalMani">
   <div class="jo-head">
     <div class="jo-close" onclick="closeJournal('mani')">‹ Путь</div>
-    <div class="jo-title">Материализации</div>
+    <div class="jo-title">Отклики реальности</div>
     <div class="jo-space"></div>
   </div>
   <div class="jo-scroll">
-    <div class="mani-totals" id="maniTotals"></div>
-    <div class="jo-add">
-      <div class="mani-kinds" id="maniKinds">
-        <button class="mani-kind active" data-k="fulfilled" onclick="setManiKind('fulfilled')">Сбылось</button>
-        <button class="mani-kind" data-k="synchro" onclick="setManiKind('synchro')">Синхрония</button>
-        <button class="mani-kind" data-k="sign" onclick="setManiKind('sign')">Знак</button>
-      </div>
-      <textarea class="claim-input jo-input" id="maniInput" rows="2" placeholder="Что материализовалось, какая синхрония случилась…"></textarea>
-      <input class="claim-input jo-amount" id="maniAmount" type="number" inputmode="decimal" placeholder="Сумма, ₽ (если про деньги)">
-      <div class="jo-add-row">
-        <button class="jo-photo-btn" id="maniPhotoBtn" onclick="attachManiPhoto()">✦ фото</button>
-        <button class="ps-btn jo-save" onclick="addManifest()">Записать</button>
-      </div>
-    </div>
+    <div class="mani-lead" id="maniLead"></div>
     <div class="jo-list" id="maniList"></div>
+    <div class="jo-hint" id="maniListHint" style="display:none">долгое нажатие по записи — удалить</div>
+  </div>
+  <div class="mani-foot">
+    <button class="ps-btn jo-save mani-cta" onclick="openManiForm()">✦ Записать отклик</button>
+  </div>
+</div>
+
+<!-- шит записи отклика (открывается и из Намерений — при отметке «сбылось») -->
+<div class="paysheet mani-sheet" id="maniSheet" onclick="if(event.target===this)closeManiForm()">
+  <div class="paysheet-card">
+    <div class="ps-title" id="maniSheetTitle">Отклик реальности</div>
+    <div class="ps-sub" id="maniSheetSub">что отозвалось — большое или самое маленькое</div>
+    <div class="mani-kinds" id="maniKinds">
+      <button class="mani-kind active" data-k="fulfilled" onclick="setManiKind('fulfilled')">Сбылось</button>
+      <button class="mani-kind" data-k="synchro" onclick="setManiKind('synchro')">Синхрония</button>
+      <button class="mani-kind" data-k="sign" onclick="setManiKind('sign')">Знак</button>
+    </div>
+    <textarea class="claim-input jo-input" id="maniInput" rows="3" placeholder="Что случилось — и что ты почувствовала…"></textarea>
+    <div class="mani-amount-link" id="maniAmountLink" onclick="toggleManiAmount()">+ сумма, если про деньги</div>
+    <input class="claim-input jo-amount" id="maniAmount" type="number" inputmode="decimal" placeholder="Сумма, ₽" style="display:none">
+    <div class="jo-add-row">
+      <button class="jo-photo-btn" id="maniPhotoBtn" onclick="attachManiPhoto()">✦ фото</button>
+      <button class="ps-btn jo-save" onclick="addManifest()">Записать</button>
+    </div>
+    <div class="ps-cancel" onclick="closeManiForm()">← назад</div>
+  </div>
+</div>
+
+<!-- полноэкранный лист письма: вечернее «выплесни» с экрана Сегодня (v116) -->
+<div class="journal-overlay write-sheet" id="writeSheet">
+  <div class="jo-head">
+    <div class="jo-close" onclick="closeWriteSheet()">‹ Сегодня</div>
+    <div class="jo-title" id="wsDate"></div>
+    <div class="jo-space"></div>
+  </div>
+  <div class="ws-body">
+    <div class="ws-phrase" id="wsPhrase"></div>
+    <textarea class="ws-input" id="wsInput" placeholder="Что происходит в теле? Какие эмоции живут в тебе сегодня — выплесни сюда всё…"></textarea>
+    <button class="ps-btn jo-save ws-save" onclick="saveWriteSheet()">Сохранить</button>
   </div>
 </div>
 
@@ -3700,7 +3755,7 @@ function nav(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-' + name).classList.add('active');
   if (name === 'path') renderPath();
-  if (name === 'today') renderTodayStats();
+  if (name === 'today') { renderTodayStats(); renderTodayCheckin(); }
 }
 
 // ===== LIBRARY: категории + уровни метода =====
@@ -4545,9 +4600,20 @@ function setStat(numId, n, one, few, many) {
   if (lbl) lbl.textContent = plural3(n, one, few, many);
 }
 
+// Мягкость к пропускам: «0 дней подряд» после паузы ранит и демотивирует.
+// Пока серия прервана, показываем накопленное «дней в пути» (уникальные дни
+// с практикой) — оно никогда не обнуляется. Серия вернётся — вернётся и она.
+function uniqueDayCount() {
+  return new Set(sessions.map((s) => dateKey(new Date(s.date)))).size;
+}
+function setStreakStat(numId) {
+  const streak = calcStreak();
+  if (streak > 0) setStat(numId, streak, 'день подряд', 'дня подряд', 'дней подряд');
+  else setStat(numId, uniqueDayCount(), 'день в пути', 'дня в пути', 'дней в пути');
+}
 function renderTodayStats() {
   const mins = sessions.reduce((a, s) => a + (s.minutes || 0), 0);
-  setStat('tStreak', calcStreak(), 'день подряд', 'дня подряд', 'дней подряд');
+  setStreakStat('tStreak');
   setStat('tSessions', sessions.length, 'практика', 'практики', 'практик');
   setStat('tMinutes', mins, 'минута', 'минуты', 'минут');
 }
@@ -4672,8 +4738,34 @@ function moonSvg(level, size) {
     'stroke-width="1.1" stroke-linejoin="round" opacity="' + conf.op + '"/></svg>';
 }
 
+// Долгое нажатие (600мс) вместо крестиков ✕: разрушительное действие уходит
+// с глаз, хроника остаётся чистой. Сдвиг пальца >8px (скролл) отменяет жест.
+function bindLongPress(el, fn) {
+  let t = null, x0 = 0, y0 = 0;
+  const cancel = () => { if (t) { clearTimeout(t); t = null; } };
+  el.addEventListener('touchstart', (e) => {
+    const p = e.touches[0]; x0 = p.clientX; y0 = p.clientY;
+    t = setTimeout(() => { t = null; haptic('light'); fn(); }, 600);
+  }, { passive: true });
+  el.addEventListener('touchmove', (e) => {
+    const p = e.touches[0];
+    if (Math.abs(p.clientX - x0) > 8 || Math.abs(p.clientY - y0) > 8) cancel();
+  }, { passive: true });
+  el.addEventListener('touchend', cancel);
+  el.addEventListener('touchcancel', cancel);
+  // фолбэк без тач-экрана: правая кнопка / долгий клик мыши
+  el.addEventListener('contextmenu', (e) => { e.preventDefault(); fn(); });
+}
+function confirmDelete(what, cb) {
+  const msg = 'Удалить ' + what + '? Это нельзя отменить.';
+  if (tg && tg.showConfirm) {
+    try { tg.showConfirm(msg, (ok) => { if (ok) cb(); }); return; } catch (e) {}
+  }
+  if (window.confirm(msg)) cb();
+}
+
 // 3 вкладки дневника: Состояние = богатый календарь (инлайн);
-// Намерения и Материализации открываются полноэкранными оверлеями.
+// Намерения и Отклики открываются полноэкранными оверлеями.
 function setJournalTab(which) {
   haptic('light');
   if (which === 'goals') { openJournal('goals'); return; }
@@ -4727,6 +4819,7 @@ function loadJournal() {
       saveJournalCache();
       if (document.getElementById('screen-path').classList.contains('active')) renderCalendar();
       renderManiSummary();
+      renderTodayCheckin();
     })
     .catch(() => {});
 }
@@ -4764,6 +4857,87 @@ function pickPhrase(key, level) {
   // стабильно для дня: индекс по дате, чтобы фраза не «прыгала» при перерисовке
   let h = 0; for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
   return arr[h % arr.length];
+}
+
+// ---- Чек-ин на «Сегодня» (v116) ----
+// Привычка живёт там, где утро начинается: тап по звезде = отметка одним движением,
+// без форм и календаря. «Выплеснуть» открывает полноэкранный лист письма.
+function renderTodayCheckin() {
+  const box = document.getElementById('checkinToday');
+  if (!box) return;
+  const key = dateKey(new Date());
+  const ci = journal.checkins[key] || {};
+  const eveningNow = new Date().getHours() >= 17;
+  document.getElementById('ctSlotM').classList.toggle('now', !eveningNow);
+  document.getElementById('ctSlotE').classList.toggle('now', eveningNow);
+  const mk = (slot, val) => {
+    const el = document.getElementById(slot === 'm' ? 'ctStarsM' : 'ctStarsE');
+    el.innerHTML = '';
+    for (let p = 1; p <= 5; p++) {
+      const b = document.createElement('button');
+      b.className = 'ct-star' + (val === p ? ' sel' : '');
+      b.innerHTML = moonSvg(p, 20);
+      b.onclick = () => tapTodayStar(slot, p);
+      el.appendChild(b);
+    }
+  };
+  mk('m', ci.morning || null);
+  mk('e', ci.evening || null);
+  const cap = document.getElementById('ctCaption');
+  if (!subActive) cap.textContent = 'дневник — часть пространства VERUM';
+  else {
+    const shown = eveningNow ? (ci.evening || ci.morning) : (ci.morning || ci.evening);
+    cap.textContent = shown ? MOON_LABELS[shown - 1] : ' ';
+  }
+  document.getElementById('ctPhrase').textContent = pickPhrase(key, ci.evening || ci.morning);
+  document.getElementById('ctNoteLink').textContent =
+    ci.note ? 'перечитать свою запись →' : 'выплеснуть пару строк →';
+}
+function tapTodayStar(slot, p) {
+  if (!subActive) { openPaywall(); return; }
+  haptic('light');
+  const key = dateKey(new Date());
+  const ci = journal.checkins[key] || { date: key };
+  // без «снятия» звезды: сервер хранит отметку навсегда (COALESCE), локальный
+  // сброс только рассинхронил бы — повторный тап просто подтверждает выбор
+  if (slot === 'm') ci.morning = p; else ci.evening = p;
+  journal.checkins[key] = ci;
+  saveJournalCache();
+  meApi('/me/checkin', { date: key, morning: ci.morning || null, evening: ci.evening || null, note: ci.note || '' });
+  renderTodayCheckin();
+  if (document.getElementById('screen-path').classList.contains('active')) renderCalendar();
+}
+
+// Полноэкранный лист письма: одна фраза, крупный серифный текст, ничего лишнего —
+// медленный осознанный ввод вместо формы в шите.
+function openWriteSheet() {
+  if (!subActive) { openPaywall(); return; }
+  haptic('light');
+  const key = dateKey(new Date());
+  const ci = journal.checkins[key] || {};
+  document.getElementById('wsDate').textContent =
+    new Date().toLocaleDateString('ru', { weekday: 'short', day: 'numeric', month: 'long' });
+  document.getElementById('wsPhrase').textContent = pickPhrase(key, ci.evening || ci.morning);
+  document.getElementById('wsInput').value = ci.note || '';
+  document.getElementById('writeSheet').classList.add('show');
+  syncBack();
+}
+function closeWriteSheet() {
+  document.getElementById('writeSheet').classList.remove('show');
+  syncBack();
+}
+function saveWriteSheet() {
+  const key = dateKey(new Date());
+  const note = document.getElementById('wsInput').value.slice(0, 4000);
+  const ci = journal.checkins[key] || { date: key };
+  ci.note = note;
+  journal.checkins[key] = ci;
+  saveJournalCache();
+  meApi('/me/checkin', { date: key, morning: ci.morning || null, evening: ci.evening || null, note });
+  haptic('success');
+  closeWriteSheet();
+  renderTodayCheckin();
+  showToast('✦ Записано — этот день услышан', true, 2200);
 }
 
 function openDayCard(key) {
@@ -4851,6 +5025,7 @@ function saveCheckin() {
   haptic('success');
   closeCheckin();
   renderCalendar();
+  renderTodayCheckin();
   showToast('✦ Записано в дневник состояния', true, 2200);
 }
 
@@ -4880,13 +5055,23 @@ function periodKeyFor(h) {
   if (h === 'week') return weekKeyOf(now);
   return '';
 }
+// Даты недели по-человечески: «21–27 июля», а не технический номер ISO-недели
+function weekRangeLabel() {
+  const now = new Date();
+  const monday = new Date(now);
+  monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+  const sunday = new Date(monday);
+  sunday.setDate(monday.getDate() + 6);
+  const dm = (d) => d.toLocaleDateString('ru', { day: 'numeric', month: 'long' });
+  if (monday.getMonth() === sunday.getMonth()) return monday.getDate() + '–' + dm(sunday);
+  return dm(monday) + ' — ' + dm(sunday);
+}
 function periodLabel(h) {
   const now = new Date();
   if (h === 'vision') return 'полотно жизни — кем я становлюсь';
   if (h === 'year') return 'намерения ' + now.getFullYear() + ' года';
   if (h === 'month') return now.toLocaleDateString('ru', { month: 'long' }) + ' · фокус месяца';
-  const wk = periodKeyFor('week');
-  return 'неделя ' + wk.slice(6) + ' · шаги и рефлексия';
+  return weekRangeLabel() + ' · шаги недели';
 }
 function setGoalTab(h) {
   haptic('light');
@@ -4902,33 +5087,44 @@ function renderGoals() {
   list.innerHTML = '';
   const items = journal.goals.filter((g) =>
     g.horizon === goalTab && (goalTab === 'vision' || g.period_key === pk));
+  // прошлая страница недели (только чтение): эффект генерации — намерения
+  // переписываются заново своими словами, механики «скопировать» нет нарочно
+  let pastItems = [];
+  if (goalTab === 'week') {
+    const prevKey = weekKeyOf(new Date(Date.now() - 7 * 86400000));
+    pastItems = journal.goals.filter((g) => g.horizon === 'week' && g.period_key === prevKey);
+  }
   if (!items.length) {
     const empty = document.createElement('div');
     empty.className = 'jo-empty';
     empty.textContent = goalTab === 'vision'
       ? 'Опиши жизнь, которую ты создаёшь, — без сроков и рамок. Это полотно можно дополнять всегда.'
-      : 'Пока пусто. Запиши первое намерение — одно, но от сердца.';
+      : (goalTab === 'week' && pastItems.length
+        ? 'Новая неделя — чистый лист. Перепиши намерения заново, своими словами: так они звучат сильнее скопированных.'
+        : 'Пока пусто. Запиши первое намерение — одно, но от сердца.');
     list.appendChild(empty);
   }
+  const hint = document.getElementById('goalListHint');
+  if (hint) hint.style.display = items.length ? 'block' : 'none';
   items.forEach((g) => {
     const row = document.createElement('div');
     row.className = 'jo-item' + (g.status === 'done' ? ' done' : '');
     row.innerHTML =
-      '<button class="jo-check" aria-label="Сбылось">' +
-        (g.status === 'done'
-          ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M4 12.5L9.5 18L20 6.5" stroke="rgba(201,174,125,0.9)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-          : '<span class="jo-circle"></span>') +
-      '</button>' +
+      '<button class="jo-check" aria-label="Сбылось">' + moonSvg(g.status === 'done' ? 5 : 1, 17) + '</button>' +
       '<div class="jo-item-body"><div class="jo-item-text"></div>' +
+        (g.plan ? '<div class="jo-item-plan"></div>' : '') +
         (g.photo_key ? '<img class="jo-item-photo" loading="lazy" src="' + photoURL(g.photo_key) + '">' : '') +
         (g.amount ? '<div class="jo-item-amount">' + Number(g.amount).toLocaleString('ru-RU') + ' ₽</div>' : '') +
-      '</div>' +
-      '<button class="jo-del" aria-label="Удалить">✕</button>';
+      '</div>';
     row.querySelector('.jo-item-text').textContent = g.text || '';
+    if (g.plan) row.querySelector('.jo-item-plan').textContent = 'если — то: ' + g.plan;
+    const ph = row.querySelector('.jo-item-photo');
+    if (ph) ph.onclick = () => ph.classList.toggle('expanded');
     row.querySelector('.jo-check').onclick = () => toggleGoalDone(g);
-    row.querySelector('.jo-del').onclick = () => deleteGoal(g);
+    bindLongPress(row, () => confirmDelete('это намерение', () => deleteGoal(g)));
     list.appendChild(row);
   });
+  renderGoalPast(pastItems);
   // Рефлексия — на неделе/месяце/годе (не на «Видении»)
   const refl = document.getElementById('weekReflect');
   const hasRefl = goalTab !== 'vision';
@@ -4940,10 +5136,24 @@ function renderGoals() {
       month: 'запиши в конце месяца, оглянувшись назад',
       year: 'запиши в конце года — большой итог пути',
     };
+    const REFL_INVITE = {
+      week: '✦ рефлексия откроется в воскресенье — придёшь перечитать неделю',
+      month: '✦ рефлексия откроется в последние дни месяца',
+      year: '✦ рефлексия откроется в конце декабря',
+    };
     document.getElementById('reflectTitle').textContent = REFL_TITLE[goalTab];
     document.getElementById('reflectHint').textContent = REFL_HINT[goalTab];
     const rk = reflectionKeyFor(goalTab);
     const r = journal.reflections.find((x) => x.week_key === rk) || {};
+    // три пустых поля не должны давить всю неделю: форма раскрывается, когда
+    // пришло её время (или уже начата) — до этого одна строка-приглашение
+    const hasContent = !!(r.went_well || r.improve || r.learned);
+    const open = reflectionDue(goalTab) || hasContent;
+    document.getElementById('reflectBody').style.display = open ? 'block' : 'none';
+    document.getElementById('reflectHint').style.display = open ? 'block' : 'none';
+    const invite = document.getElementById('reflectInvite');
+    invite.style.display = open ? 'none' : 'block';
+    invite.textContent = REFL_INVITE[goalTab];
     document.getElementById('rWell').value = r.went_well || '';
     document.getElementById('rImprove').value = r.improve || '';
     document.getElementById('rLearned').value = r.learned || '';
@@ -4969,26 +5179,80 @@ function renderGoals() {
     }
   }
 }
+// Когда рефлексии пора раскрыться: неделя — в воскресенье, месяц — в последние
+// два дня, год — с 25 декабря. Начатая рефлексия открыта всегда.
+function reflectionDue(h) {
+  const now = new Date();
+  if (h === 'week') return now.getDay() === 0;
+  if (h === 'month') {
+    const last = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    return now.getDate() >= last - 1;
+  }
+  if (h === 'year') return now.getMonth() === 11 && now.getDate() >= 25;
+  return false;
+}
+// свёрнутая «прошлая страница» под списком недели
+let pastOpen = false;
+function renderGoalPast(items) {
+  const box = document.getElementById('goalPast');
+  if (!box) return;
+  box.innerHTML = '';
+  if (goalTab !== 'week' || !items.length) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+  const doneN = items.filter((g) => g.status === 'done').length;
+  const head = document.createElement('div');
+  head.className = 'jo-past-head';
+  head.innerHTML = '<span>прошлая страница · ' + items.length + ' ' +
+    plural3(items.length, 'намерение', 'намерения', 'намерений') +
+    (doneN ? ' · сбылось ' + doneN : '') + '</span><span class="jo-past-chev">' + (pastOpen ? '▴' : '▾') + '</span>';
+  head.onclick = () => { haptic('light'); pastOpen = !pastOpen; renderGoals(); };
+  box.appendChild(head);
+  if (!pastOpen) return;
+  items.forEach((g) => {
+    const row = document.createElement('div');
+    row.className = 'jo-item jo-past-item' + (g.status === 'done' ? ' done' : '');
+    row.innerHTML = '<span class="jo-check ro">' + moonSvg(g.status === 'done' ? 5 : 1, 15) + '</span>' +
+      '<div class="jo-item-body"><div class="jo-item-text"></div></div>';
+    row.querySelector('.jo-item-text').textContent = g.text || '';
+    box.appendChild(row);
+  });
+  const note = document.createElement('div');
+  note.className = 'jo-past-note';
+  note.textContent = 'прошлое остаётся страницей — новую неделю пиши заново, своими словами';
+  box.appendChild(note);
+}
 function reflectionKeyFor(h) {
   const now = new Date();
   if (h === 'month') return now.getFullYear() + '-M' + String(now.getMonth() + 1).padStart(2, '0');
   if (h === 'year') return now.getFullYear() + '-Y';
   return weekKeyOf(now);
 }
+// необязательный план «если — то» (WOOP): раскрывается по касанию
+let goalPlanOpen = false;
+function toggleGoalPlan() {
+  haptic('light');
+  goalPlanOpen = !goalPlanOpen;
+  document.getElementById('goalPlan').style.display = goalPlanOpen ? 'block' : 'none';
+  document.getElementById('goalPlanLink').classList.toggle('open', goalPlanOpen);
+}
 function addGoal() {
   const inp = document.getElementById('goalInput');
   const text = inp.value.trim().slice(0, 4000);
-  if (!text) { showToast('Запишите намерение — хотя бы пару слов'); return; }
+  if (!text) { showToast('Запиши намерение — хотя бы пару слов'); return; }
+  const planEl = document.getElementById('goalPlan');
+  const plan = planEl.value.trim().slice(0, 1000) || null;
   const g = {
     id: 'tmp' + Date.now(), horizon: goalTab, period_key: periodKeyFor(goalTab),
-    text, status: 'active', photo_key: goalPhotoKey, amount: null,
+    text, status: 'active', photo_key: goalPhotoKey, amount: null, plan,
   };
   journal.goals.unshift(g);
   saveJournalCache();
   inp.value = '';
+  planEl.value = '';
+  if (goalPlanOpen) toggleGoalPlan();
   goalPhotoKey = null;
   document.getElementById('goalPhotoBtn').classList.remove('has');
-  meApi('/me/goal', { horizon: g.horizon, period_key: g.period_key, text: g.text, photo_key: g.photo_key },
+  meApi('/me/goal', { horizon: g.horizon, period_key: g.period_key, text: g.text, photo_key: g.photo_key, plan: g.plan },
     (d) => { if (d && d.id) { g.id = d.id; saveJournalCache(); } });
   haptic('success');
   renderGoals();
@@ -4999,7 +5263,9 @@ function toggleGoalDone(g) {
   saveJournalCache();
   if (typeof g.id === 'number') meApi('/me/goal', { id: g.id, text: g.text, status: g.status });
   renderGoals();
-  if (g.status === 'done') showToast('✦ Сбылось — отметьте в Материализациях, если хотите', true, 3200);
+  // связка дневников: сбывшееся намерение просится в летопись откликов —
+  // предзаполняем запись, добавить «что почувствовала» можно прямо в текст
+  if (g.status === 'done') openManiForm({ prefill: g.text, fromGoal: true });
 }
 function deleteGoal(g) {
   haptic('light');
@@ -5021,48 +5287,56 @@ function saveReflection() {
   saveJournalCache();
   meApi('/me/reflection', r);
   haptic('success');
-  showToast('✦ Рефлексия недели сохранена', true, 2200);
+  showToast('✦ Рефлексия сохранена', true, 2200);
 }
 
-// ---- Материализации ----
+// ---- Отклики реальности (бывш. «Материализации», v116) ----
+// Летопись первой, форма — шитом по кнопке; счётчиков-нулей больше нет:
+// вместо бухгалтерии — одна живая строка-итог месяца.
 let maniKind = 'fulfilled';
 let maniPhotoKey = null;
 const MANI_KIND_RU = { fulfilled: 'сбылось', synchro: 'синхрония', sign: 'знак' };
+const MONTHS_PREP = ['январе', 'феврале', 'марте', 'апреле', 'мае', 'июне',
+  'июле', 'августе', 'сентябре', 'октябре', 'ноябре', 'декабре'];
 function setManiKind(k) {
   haptic('light');
   maniKind = k;
   document.querySelectorAll('#maniKinds .mani-kind').forEach((b) =>
     b.classList.toggle('active', b.dataset.k === k));
 }
-function maniTotalsData() {
-  let done = 0, syn = 0, money = 0;
-  journal.manifests.forEach((m) => {
-    if (m.kind === 'fulfilled') done++;
-    else syn++;
-    money += Number(m.amount) || 0;
-  });
-  return { done, syn, money };
-}
+// строка-итог над летописью: «в июле реальность откликнулась 7 раз · 45 000 ₽»
 function renderManiSummary() {
-  const el = document.getElementById('maniSummary');
+  const el = document.getElementById('maniLead');
   if (!el) return;
-  const t = maniTotalsData();
-  if (!journal.manifests.length) { el.textContent = 'сбывшееся · синхронии · знаки'; return; }
-  el.textContent = t.done + ' сбылось · ' + t.syn + ' синхроний' +
-    (t.money ? ' · ' + t.money.toLocaleString('ru-RU') + ' ₽' : '');
+  const all = journal.manifests || [];
+  if (!all.length) { el.style.display = 'none'; return; }
+  const mKey = dateKey(new Date()).slice(0, 7);
+  let n = 0, money = 0, totalMoney = 0;
+  all.forEach((m) => {
+    totalMoney += Number(m.amount) || 0;
+    if ((m.date || '').slice(0, 7) === mKey) { n++; money += Number(m.amount) || 0; }
+  });
+  el.style.display = 'block';
+  if (n) {
+    el.textContent = 'в ' + MONTHS_PREP[new Date().getMonth()] + ' реальность откликнулась ' +
+      n + ' ' + plural3(n, 'раз', 'раза', 'раз') +
+      (money ? ' · ' + money.toLocaleString('ru-RU') + ' ₽' : '');
+  } else {
+    el.textContent = 'за всё время — ' + all.length + ' ' +
+      plural3(all.length, 'отклик', 'отклика', 'откликов') +
+      (totalMoney ? ' · ' + totalMoney.toLocaleString('ru-RU') + ' ₽' : '');
+  }
 }
 function renderMani() {
-  const t = maniTotalsData();
-  document.getElementById('maniTotals').innerHTML =
-    '<div class="mt-cell"><div class="mt-num">' + t.done + '</div><div class="mt-label">сбылось</div></div>' +
-    '<div class="mt-cell"><div class="mt-num">' + t.syn + '</div><div class="mt-label">синхроний и знаков</div></div>' +
-    '<div class="mt-cell"><div class="mt-num">' + (t.money ? t.money.toLocaleString('ru-RU') : '—') + '</div><div class="mt-label">₽ материализовано</div></div>';
+  renderManiSummary();
   const list = document.getElementById('maniList');
   list.innerHTML = '';
+  const lhint = document.getElementById('maniListHint');
+  if (lhint) lhint.style.display = journal.manifests.length ? 'block' : 'none';
   if (!journal.manifests.length) {
     const empty = document.createElement('div');
     empty.className = 'jo-empty';
-    empty.textContent = 'Здесь будет летопись откликов реальности: сбывшееся, синхронии, знаки. Начните с первого — даже маленького.';
+    empty.textContent = 'Здесь растёт летопись откликов реальности: сбывшееся, синхронии, знаки. Начни с первого — даже самого маленького.';
     list.appendChild(empty);
   }
   journal.manifests.forEach((m) => {
@@ -5071,26 +5345,55 @@ function renderMani() {
     const d = m.date ? new Date(m.date + 'T12:00:00') : null;
     row.innerHTML =
       '<div class="mani-item-head"><span class="mani-tag k-' + m.kind + '">' + (MANI_KIND_RU[m.kind] || '') + '</span>' +
-      '<span class="mani-date">' + (d ? d.toLocaleDateString('ru', { day: 'numeric', month: 'long' }) : '') + '</span>' +
-      '<button class="jo-del" aria-label="Удалить">✕</button></div>' +
+      '<span class="mani-date">' + (d ? d.toLocaleDateString('ru', { day: 'numeric', month: 'long' }) : '') + '</span></div>' +
       '<div class="mani-text"></div>' +
       (m.photo_key ? '<img class="jo-item-photo" loading="lazy" src="' + photoURL(m.photo_key) + '">' : '') +
       (m.amount ? '<div class="jo-item-amount">' + Number(m.amount).toLocaleString('ru-RU') + ' ₽</div>' : '');
     row.querySelector('.mani-text').textContent = m.text || '';
-    row.querySelector('.jo-del').onclick = () => {
-      haptic('light');
+    const ph = row.querySelector('.jo-item-photo');
+    if (ph) ph.onclick = () => ph.classList.toggle('expanded');
+    bindLongPress(row, () => confirmDelete('эту запись', () => {
       journal.manifests = journal.manifests.filter((x) => x !== m);
       saveJournalCache();
       if (typeof m.id === 'number') meApi('/me/manifest', { id: m.id, delete: true });
-      renderMani(); renderManiSummary();
-    };
+      renderMani();
+    }));
     list.appendChild(row);
   });
+}
+// шит записи отклика; открывается кнопкой в летописи и из Намерений («сбылось»)
+let maniFromGoal = false;
+function openManiForm(opts) {
+  if (!subActive) { openPaywall(); return; }
+  haptic('light');
+  maniFromGoal = !!(opts && opts.fromGoal);
+  document.getElementById('maniSheetTitle').textContent =
+    maniFromGoal ? '✦ Сбылось!' : 'Отклик реальности';
+  document.getElementById('maniSheetSub').textContent = maniFromGoal
+    ? 'впиши в летопись — и добавь, что ты почувствовала'
+    : 'что отозвалось — большое или самое маленькое';
+  if (maniFromGoal) setManiKind('fulfilled');
+  if (opts && opts.prefill) document.getElementById('maniInput').value = opts.prefill;
+  document.getElementById('maniSheet').classList.add('show');
+  syncBack();
+}
+function closeManiForm() {
+  document.getElementById('maniSheet').classList.remove('show');
+  syncBack();
+}
+function toggleManiAmount() {
+  haptic('light');
+  const el = document.getElementById('maniAmount');
+  const show = el.style.display === 'none';
+  el.style.display = show ? 'block' : 'none';
+  document.getElementById('maniAmountLink').textContent =
+    show ? '− убрать сумму' : '+ сумма, если про деньги';
+  if (show) { try { el.focus(); } catch (e) {} }
 }
 function addManifest() {
   const inp = document.getElementById('maniInput');
   const text = inp.value.trim().slice(0, 2000);
-  if (!text) { showToast('Опишите, что произошло, — хотя бы строчку'); return; }
+  if (!text) { showToast('Опиши, что произошло, — хотя бы строчку'); return; }
   const amountRaw = document.getElementById('maniAmount').value;
   const m = {
     id: 'tmp' + Date.now(), date: dateKey(new Date()), kind: maniKind, text,
@@ -5099,13 +5402,18 @@ function addManifest() {
   journal.manifests.unshift(m);
   saveJournalCache();
   inp.value = '';
-  document.getElementById('maniAmount').value = '';
+  const amt = document.getElementById('maniAmount');
+  amt.value = ''; amt.style.display = 'none';
+  document.getElementById('maniAmountLink').textContent = '+ сумма, если про деньги';
   maniPhotoKey = null;
   document.getElementById('maniPhotoBtn').classList.remove('has');
   meApi('/me/manifest', { date: m.date, kind: m.kind, text: m.text, amount: m.amount, photo_key: m.photo_key },
     (d) => { if (d && d.id) { m.id = d.id; saveJournalCache(); } });
   haptic('success');
-  renderMani(); renderManiSummary();
+  closeManiForm();
+  renderMani();
+  if (document.getElementById('screen-path').classList.contains('active')) renderCalendar();
+  showToast('✦ Вписано в летопись откликов', true, 2400);
 }
 
 // ---- Фото: сжатие на клиенте → R2 через воркер ----
@@ -5135,7 +5443,7 @@ function pickPhoto(cb) {
         }).then((r) => r.json()).then((d) => {
           if (d && d.ok && d.key) cb(d.key);
           else showToast(d && d.reason === 'quota'
-            ? 'Хранилище фото заполнено' : 'Фото не загрузилось — попробуйте ещё раз');
+            ? 'Хранилище фото заполнено' : 'Фото не загрузилось — попробуй ещё раз');
         }).catch(() => showToast('Нет связи — фото можно добавить позже'));
       }, 'image/jpeg', 0.82);
       URL.revokeObjectURL(img.src);
@@ -5183,7 +5491,7 @@ function renderPath() {
   // рисуем содержимое всегда — под замком оно показывается «под стеклом» (превью),
   // используя реальный локальный прогресс (бесплатная игра ПОТОК уже даёт историю)
   renderManiSummary();
-  setStat('statStreak', calcStreak(), 'день подряд', 'дня подряд', 'дней подряд');
+  setStreakStat('statStreak');
   setStat('statTotal', sessions.length, 'сессия', 'сессии', 'сессий');
   setStat('statMinutes', sessions.reduce((a, s) => a + (s.minutes || 0), 0), 'минута', 'минуты', 'минут');
 
@@ -5836,7 +6144,7 @@ const FOUNDING_SEATS = 43;
 
 // Валютная оплата через Lava.top ($ / €). Ссылки на подписки:
 // стандарт: $39/мес · $329/год; основательницы: $25/мес · $259/год (период выбирается на странице Lava)
-const APP_BUILD = 101; // внутренняя метка, в интерфейсе не показывается // метка сборки: внизу Пути, детектор кэша Telegram
+const APP_BUILD = 116; // внутренняя метка (= блок VERUM v116), в интерфейсе не показывается
 
 // клавиатура iOS: поле email в фокусе → шторка поднимается наверх
 document.querySelectorAll('.claim-input').forEach(inp => {
@@ -6291,6 +6599,8 @@ function syncBack() {
     document.getElementById('paysheet').classList.contains('show') ||
     document.getElementById('paywall').classList.contains('show') ||
     document.getElementById('checkinSheet').classList.contains('show') ||
+    document.getElementById('maniSheet').classList.contains('show') ||
+    document.getElementById('writeSheet').classList.contains('show') ||
     document.getElementById('journalGoals').classList.contains('show') ||
     document.getElementById('journalMani').classList.contains('show') ||
     document.getElementById('fullplayer').classList.contains('show');
@@ -6306,6 +6616,9 @@ if (tg && tg.BackButton) {
     else if (document.getElementById('paysheet').classList.contains('show')) closePaysheet();
     else if (document.getElementById('paywall').classList.contains('show')) closePaywall();
     else if (document.getElementById('checkinSheet').classList.contains('show')) closeCheckin();
+    // maniSheet лежит ПОВЕРХ оверлеев дневников (z 170 > 140) — закрывается первым
+    else if (document.getElementById('maniSheet').classList.contains('show')) closeManiForm();
+    else if (document.getElementById('writeSheet').classList.contains('show')) closeWriteSheet();
     else if (document.getElementById('journalGoals').classList.contains('show')) closeJournal('goals');
     else if (document.getElementById('journalMani').classList.contains('show')) closeJournal('mani');
     else if (document.getElementById('fullplayer').classList.contains('show')) minimizeFull();
@@ -6477,6 +6790,9 @@ loadSessions(() => {
   updateRing(0);
   renderTodayStats();
 });
+// чек-ин на «Сегодня»: первый рендер из локального кеша журнала (мгновенно),
+// сервер потом лишь сверит (loadJournal → renderTodayCheckin)
+renderTodayCheckin();
 </script>
 <style>
 /* ===== ШРИФТЫ (в конце файла, чтобы не блокировать первый кадр) ===== */
@@ -7343,6 +7659,141 @@ loadSessions(() => {
   .cip-row:first-of-type { border-top: none; }
   .cip-min { font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--gold); white-space: nowrap; margin-left: 12px; }
   .reflect-hint { font-size: 11px; letter-spacing: 0.03em; color: var(--faint); font-style: italic; margin: -4px 0 10px; text-align: center; }
+
+  /* === VERUM v116 · Дневники «как ритуал»: чек-ин на Сегодня, лист письма,
+     Отклики реальности (лента-первая), прошлая страница, WOOP, тон «ты» ===
+     По исследованию (рука vs цифра): работают механизмы — генерация заново,
+     настоящее время + чувство, план «если—то», перечитывание, мягкость к пропускам.
+     Дизайн переносит их: минимум хрома, медленный тёплый ввод, без бухгалтерии. */
+
+  /* -- чек-ин на «Сегодня»: тап по звезде = отметка одним движением -- */
+  .checkin-today { padding: 20px 20px 16px; margin-top: 14px; text-align: center; }
+  .ct-eyebrow { font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--faint); }
+  .ct-phrase {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 15px; line-height: 1.45; color: var(--gold);
+    margin: 8px 0 4px;
+  }
+  .ct-slots { display: flex; gap: 8px; margin-top: 10px; }
+  .ct-slot { flex: 1; padding: 8px 4px 6px; border-radius: 16px; border: 1px solid transparent; transition: border-color 0.3s ease; }
+  .ct-slot.now { border-color: rgba(201,174,125,0.28); background: rgba(255,255,255,0.02); }
+  .ct-slot-label { font-size: 8.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--faint); margin-bottom: 6px; }
+  .ct-slot.now .ct-slot-label { color: var(--gold); }
+  .ct-stars { display: flex; justify-content: center; gap: 4px; }
+  .ct-star {
+    width: 32px; height: 32px; border-radius: 50%; padding: 0;
+    background: none; border: none; cursor: pointer; opacity: 0.5;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .ct-star.sel {
+    opacity: 1; transform: scale(1.12);
+    background: radial-gradient(circle, rgba(201,174,125,0.16), transparent 70%);
+  }
+  .ct-caption {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 13.5px; color: var(--gold); min-height: 18px; margin-top: 8px;
+  }
+  .ct-note-link {
+    font-size: 12px; letter-spacing: 0.04em; color: var(--soft-ink);
+    margin-top: 8px; cursor: pointer;
+    text-decoration: underline; text-decoration-color: rgba(230,238,238,0.35);
+    text-decoration-thickness: 0.7px; text-underline-offset: 3px;
+  }
+
+  /* -- полноэкранный лист письма: одна фраза и много воздуха -- */
+  .write-sheet .ws-body {
+    flex: 1; display: flex; flex-direction: column;
+    padding: 10px 22px calc(18px + env(safe-area-inset-bottom));
+    overflow: hidden;
+  }
+  .ws-phrase {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 16px; line-height: 1.5; color: var(--gold);
+    text-align: center; margin: 6px 0 14px;
+  }
+  .ws-input {
+    flex: 1; width: 100%; resize: none;
+    background: transparent; border: none; outline: none;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17.5px; line-height: 1.75; color: var(--pearl, #E6EEEE);
+    caret-color: #d8bd8a; padding: 4px 2px;
+  }
+  .ws-input::placeholder { color: rgba(147,167,172,0.65); font-style: italic; }
+  .ws-save { margin-top: 12px !important; flex-shrink: 0; }
+
+  /* -- Отклики реальности: летопись первой, кнопка внизу -- */
+  .mani-lead {
+    text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 14.5px; color: var(--gold); margin: 2px 0 12px;
+  }
+  .mani-foot {
+    flex-shrink: 0;
+    padding: 10px 18px calc(14px + env(safe-area-inset-bottom));
+    background: linear-gradient(180deg, transparent, rgba(1,7,10,0.85) 40%);
+  }
+  .mani-cta { width: 100%; }
+  .mani-sheet .mani-kinds { margin: 14px 0 12px; }
+  .mani-amount-link, .jo-plan-link {
+    font-size: 11.5px; letter-spacing: 0.04em; color: var(--faint);
+    margin: 8px 2px 0; cursor: pointer; text-align: left;
+  }
+  .jo-plan-link.open { color: var(--gold); }
+  .mani-sheet .jo-amount { margin-top: 8px; }
+  .mani-sheet .jo-add-row { margin-top: 12px; }
+  .mani-sheet .jo-input { margin-top: 2px; }
+
+  /* -- намерения: подсказки, план «если—то», прошлая страница -- */
+  .jo-gen-hint {
+    font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--faint); margin: 6px 2px 0; opacity: 0.85;
+  }
+  #goalPlan { margin-top: 8px; }
+  .jo-item-plan {
+    font-size: 12px; line-height: 1.5; color: var(--faint);
+    font-style: italic; margin-top: 4px; white-space: pre-wrap;
+  }
+  .jo-hint {
+    text-align: center; font-size: 9px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--faint); opacity: 0.75; margin: 2px 0 10px;
+  }
+  .jo-past { margin: 4px 0 18px; }
+  .jo-past-head {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 11px; letter-spacing: 0.06em; color: var(--faint);
+    padding: 10px 2px; cursor: pointer;
+    border-top: 1px solid rgba(201,174,125,0.14);
+  }
+  .jo-past-chev { color: rgba(201,174,125,0.6); font-size: 10px; }
+  .jo-past-item { opacity: 0.55; padding: 9px 4px; }
+  .jo-past-item .jo-item-text { font-size: 13px; }
+  .jo-past-note {
+    text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 12.5px; color: var(--faint); padding: 8px 10px 2px;
+  }
+  .jo-check.ro { cursor: default; pointer-events: none; }
+
+  /* записи дневников: долгое нажатие = удалить (без выделения текста под пальцем) */
+  .jo-item, .mani-item { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+
+  /* -- фото в записях: миниатюра, тап раскрывает -- */
+  .jo-item-photo {
+    width: 54px; height: 54px; object-fit: cover; max-width: none;
+    border-radius: 10px; cursor: pointer;
+    transition: width 0.25s ease, height 0.25s ease;
+  }
+  .jo-item-photo.expanded { width: 100%; max-width: 260px; height: auto; }
+
+  /* -- рефлексия: тёплые вопросы строчными вместо КАПС-ярлыков -- */
+  .jr-label {
+    text-transform: none; letter-spacing: 0.02em;
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 14px; color: var(--soft-ink); margin: 14px 0 6px;
+  }
+  .reflect-invite {
+    text-align: center; font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 13.5px; line-height: 1.55; color: var(--faint); padding: 6px 8px 10px;
+  }
 </style>
 </body>
 </html>
