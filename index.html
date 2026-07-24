@@ -5117,7 +5117,7 @@ function renderGoals() {
         (g.amount ? '<div class="jo-item-amount">' + Number(g.amount).toLocaleString('ru-RU') + ' ₽</div>' : '') +
       '</div>';
     row.querySelector('.jo-item-text').textContent = g.text || '';
-    if (g.plan) row.querySelector('.jo-item-plan').textContent = 'если — то: ' + g.plan;
+    if (g.plan) row.querySelector('.jo-item-plan').textContent = '↳ ' + g.plan;
     const ph = row.querySelector('.jo-item-photo');
     if (ph) ph.onclick = () => ph.classList.toggle('expanded');
     row.querySelector('.jo-check').onclick = () => toggleGoalDone(g);
@@ -7720,7 +7720,9 @@ renderTodayCheckin();
     caret-color: #d8bd8a; padding: 4px 2px;
   }
   .ws-input::placeholder { color: rgba(147,167,172,0.65); font-style: italic; }
-  .ws-save { margin-top: 12px !important; flex-shrink: 0; }
+  /* .jo-save несёт flex:1 из v113 (для строки) — в колонке листа это раздуло бы
+     кнопку по вертикали; возвращаем естественную высоту */
+  .ws-save { margin-top: 12px !important; flex: 0 0 auto; }
 
   /* -- Отклики реальности: летопись первой, кнопка внизу -- */
   .mani-lead {
